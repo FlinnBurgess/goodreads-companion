@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goodreads_companion/shelf.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'library.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Library library = await Library();
+  Library library = await Library.load();
 
   runApp(ChangeNotifierProvider(create: (_) => library, child: MyApp()));
 }
@@ -42,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int STATISTICS = 1;
   static const int RECOMMEND = 2;
   static const int SETTINGS = 3;
+  static const int BOOK_RETRIEVAL_PAGE_SIZE = 200;
 
   int _selectedPage = BOOKS_LIST;
 
@@ -70,6 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
             case STATISTICS:
               return BooksReadStatistic(
                 books: books,
+              );
+            case RECOMMEND:
+              return Column(
+                children: [],
               );
             default:
               return Text('Number of books: ${books.length}');
@@ -106,6 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         );
+      } else if (library.shelves.isNotEmpty) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Goodreads Companion'),
+          ),
+          body: Center(
+            child: LibraryPopulationProgressIndicator(library.shelves),
+          ),
+        );
       } else {
         return Scaffold(
           appBar: AppBar(
@@ -137,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
         int booksRemaining = library.shelves[shelfName].size;
         int page = 1;
         var url =
-            'https://www.goodreads.com/review/list/45519898.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=$shelfName&per_page=200';
+            'https://www.goodreads.com/review/list/45519898.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=$shelfName&per_page=$BOOK_RETRIEVAL_PAGE_SIZE';
         List<XmlElement> allReviewsXml = [];
 
         while (booksRemaining > 0) {
@@ -148,7 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
               .getElement('reviews')
               .findAllElements('review')
               .toList());
-          booksRemaining -= 200;
+          booksRemaining -= BOOK_RETRIEVAL_PAGE_SIZE;
+          library.updateShelfPopulationProgress(shelfName, BOOK_RETRIEVAL_PAGE_SIZE);
           page++;
         }
 
@@ -161,10 +177,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<List<Book>> generateBooksFromXml(List<XmlElement> allReviewsXml) async {
-    List<Book> books = allReviewsXml.map((reviewXml) => Book.fromXml(reviewXml)).toList();
+  Future<List<Book>> generateBooksFromXml(
+      List<XmlElement> allReviewsXml) async {
+    List<Book> books =
+        allReviewsXml.map((reviewXml) => Book.fromXml(reviewXml)).toList();
 
-    Future.forEach(books, (Book book) => book.enrichWithGoogleData());
+//    await Future.forEach(books, (Book book) async => book.enrichWithGoogleData());
 
 //    allReviewsXml.forEach((reviewXml) async {
 //      var book = Book.fromXml(reviewXml);
@@ -173,5 +191,30 @@ class _MyHomePageState extends State<MyHomePage> {
 //    });
 
     return books;
+  }
+}
+
+class LibraryPopulationProgressIndicator extends StatelessWidget {
+  final Map<String, Shelf> shelves;
+
+  LibraryPopulationProgressIndicator(this.shelves);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: shelves.values
+            .map((shelf) => Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: Column(children: [
+                  Text(shelf.name),
+                  LinearProgressIndicator(
+                    value: shelf.populationProgress / shelf.size,
+                  )
+                ])))
+            .toList(),
+      ),
+    );
   }
 }

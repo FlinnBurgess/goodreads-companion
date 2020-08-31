@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'book.dart';
 
 class Shelf {
   int size;
+  int populationProgress = 0;
   String name;
   List<Book> books;
 
@@ -13,6 +16,10 @@ class Shelf {
     books = List<Map>.from(json['books'])
         .map((bookJson) => Book.fromJson(bookJson))
         .toList();
+  }
+
+  void updatePopulationProgress(int increase) {
+    populationProgress = min(populationProgress + increase, size);
   }
 
   Map<String, dynamic> asJson() {

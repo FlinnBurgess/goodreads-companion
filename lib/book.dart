@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:http/http.dart';
@@ -16,12 +15,12 @@ class Book {
   double averageRating;
   int numberOfRatings;
   String author;
-
-  int userRating;
   String rawDateStartedReading;
   DateTime dateStartedReading;
   String rawDateFinishedReading;
   DateTime dateFinishedReading;
+
+  int userRating;
   List<String> categories;
 
   Book.fromXml(XmlElement reviewXml) {
@@ -75,6 +74,7 @@ class Book {
     dateStartedReading = _dateTimeFromRawText(rawDateStartedReading);
     rawDateFinishedReading = json['rawDateFinishedReading'];
     dateFinishedReading = _dateTimeFromRawText(rawDateFinishedReading);
+    userRating = json['userRating'];
   }
 
   Map<String, dynamic> asJson() {
@@ -92,6 +92,7 @@ class Book {
       'author': author,
       'rawDateStartedReading': rawDateStartedReading,
       'rawDateFinishedReading': rawDateFinishedReading,
+      'userRating': userRating,
     };
   }
 
@@ -110,7 +111,7 @@ class Book {
   }
 
   Future<Book> enrichWithGoogleData() async {
-//    _enrichCategories();
+    _enrichCategories();
 
 //    var url = _getGoogleBooksUrl();
 //
@@ -227,6 +228,7 @@ class Book {
 
       while (currentMatch < genresToStore) {
         categories.add(genresFound.elementAt(currentMatch).group(0));
+        currentMatch++;
       }
 
       print('categories found: ${categories.toString()}');

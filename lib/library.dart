@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:goodreads_companion/shelf.dart';
@@ -24,6 +25,11 @@ class Library extends ChangeNotifier {
 
   void addBooksToShelf(String shelfName, List<Book> books) {
     _shelves[shelfName].books = books;
+    notifyListeners();
+  }
+
+  void updateShelfPopulationProgress(String shelfName, int increase) {
+    _shelves[shelfName].populationProgress = min(_shelves[shelfName].populationProgress + 200, _shelves[shelfName].size);
     notifyListeners();
   }
 
