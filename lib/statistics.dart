@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'book.dart';
@@ -17,8 +19,10 @@ class BooksReadStatistic extends StatelessWidget {
 
     return Container(
       height: 60,
-      child: Column(
-          children: [Text('Books Read'), Text('$numberOfBooksRead ($percentageOfBooksRead%)')]),
+      child: Column(children: [
+        Text('Books Read'),
+        Text('$numberOfBooksRead ($percentageOfBooksRead%)')
+      ]),
     );
   }
 }
@@ -112,8 +116,10 @@ class AverageTimeToReadStatistic extends StatelessWidget {
           ));
     }
 
-    List<int> daysTakenToRead = booksRead.map((book) =>
-        book.dateFinishedReading.difference(book.dateStartedReading).inDays).toList();
+    List<int> daysTakenToRead = booksRead
+        .map((book) =>
+            book.dateFinishedReading.difference(book.dateStartedReading).inDays)
+        .toList();
 
     int averageDaysToRead =
         (daysTakenToRead.reduce((a, b) => a + b) / daysTakenToRead.length)
@@ -125,6 +131,48 @@ class AverageTimeToReadStatistic extends StatelessWidget {
           children: [
             Text('Average number of days taken to read'),
             Text('$averageDaysToRead')
+          ],
+        ));
+  }
+}
+
+class AverageReadingRateStatistic extends StatelessWidget {
+  final List<Book> books;
+
+  const AverageReadingRateStatistic({Key key, this.books}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Book> booksWithData = books
+        .where((book) =>
+            book.dateStartedReading != null &&
+            book.dateFinishedReading != null &&
+            book.numberOfPages != null)
+        .toList();
+
+    if (booksWithData.isEmpty) {
+      return Container(
+          height: 60,
+          child: Column(
+            children: [Text('Average time to read'), Text('No data available')],
+          ));
+    }
+
+    List<double> readingRates = booksWithData
+        .map((book) =>
+            book.numberOfPages /
+            max(book.dateFinishedReading.difference(book.dateStartedReading).inDays, 1))
+        .toList();
+
+    int averageReadingRate =
+        (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
+
+    return Container(
+        height: 60,
+        child: Column(
+          children: [
+            Text('Average reading rate'),
+            Text('$averageReadingRate pages a day')
           ],
         ));
   }
