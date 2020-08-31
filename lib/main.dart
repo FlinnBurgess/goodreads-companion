@@ -71,13 +71,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text(books[index].title),
                       ));
             case STATISTICS:
-              return BooksReadStatistic(
-                books: books,
-              );
+              return Column(children: [
+                BooksReadStatistic(
+                  books: books,
+                ),
+                AverageNumberOfPagesStatistic(
+                  books: books,
+                )
+              ]);
             case RECOMMEND:
               return BookRecommendationsPage(books);
             case SETTINGS:
-              //TODO Add a settings page
+            //TODO Add a settings page
             default:
               return Text('Number of books: ${books.length}');
           }
@@ -165,7 +170,8 @@ class _MyHomePageState extends State<MyHomePage> {
               .findAllElements('review')
               .toList());
           booksRemaining -= BOOK_RETRIEVAL_PAGE_SIZE;
-          library.updateShelfPopulationProgress(shelfName, BOOK_RETRIEVAL_PAGE_SIZE);
+          library.updateShelfPopulationProgress(
+              shelfName, BOOK_RETRIEVAL_PAGE_SIZE);
           page++;
         }
 
