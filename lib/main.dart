@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goodreads_companion/recommendations.dart';
 import 'package:goodreads_companion/shelf.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:http/http.dart' as http;
@@ -74,9 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 books: books,
               );
             case RECOMMEND:
-              return Column(
-                children: [],
-              );
+              return BookRecommendationsPage(books);
+            case SETTINGS:
+              //TODO Add a settings page
             default:
               return Text('Number of books: ${books.length}');
           }
