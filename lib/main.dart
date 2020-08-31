@@ -86,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 AverageReadingRateStatistic(
                   books: books,
-                )
+                ),
+                StartAndFinishReadingDaysStatistic(books: books),
               ]);
             case RECOMMEND:
               return BookRecommendationsPage(books);
