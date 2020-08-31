@@ -18,7 +18,7 @@ class BooksReadStatistic extends StatelessWidget {
     return Container(
       height: 60,
       child: Column(
-          children: [Text('Books Read'), Text('$percentageOfBooksRead%')]),
+          children: [Text('Books Read'), Text('$numberOfBooksRead ($percentageOfBooksRead%)')]),
     );
   }
 }
@@ -76,7 +76,6 @@ class TotalPagesReadStatistic extends StatelessWidget {
           child: Column(
             children: [Text('Total pages read'), Text('No data available')],
           ));
-      return Text('No data available');
     }
 
     int totalPages =
@@ -86,6 +85,47 @@ class TotalPagesReadStatistic extends StatelessWidget {
         height: 60,
         child: Column(
           children: [Text('Total number of pages read'), Text('$totalPages')],
+        ));
+  }
+}
+
+class AverageTimeToReadStatistic extends StatelessWidget {
+  final List<Book> books;
+
+  const AverageTimeToReadStatistic({Key key, this.books}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Book> booksRead = books
+        .where((book) =>
+            book.dateStartedReading != null && book.dateFinishedReading != null)
+        .toList();
+
+    if (booksRead.isEmpty) {
+      return Container(
+          height: 60,
+          child: Column(
+            children: [
+              Text('Average time to read'),
+              Text('You haven\'t finished any of the books in this shelf!')
+            ],
+          ));
+    }
+
+    List<int> daysTakenToRead = booksRead.map((book) =>
+        book.dateFinishedReading.difference(book.dateStartedReading).inDays).toList();
+
+    int averageDaysToRead =
+        (daysTakenToRead.reduce((a, b) => a + b) / daysTakenToRead.length)
+            .floor();
+
+    return Container(
+        height: 60,
+        child: Column(
+          children: [
+            Text('Average number of days taken to read'),
+            Text('$averageDaysToRead')
+          ],
         ));
   }
 }
