@@ -73,6 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
             case STATISTICS:
               return SingleChildScrollView(
                   child: Column(children: [
+                NumberOfBooksStatistic(
+                  books: books,
+                ),
                 BooksReadStatistic(
                   books: books,
                 ),

@@ -329,3 +329,21 @@ class FinishReadingDaysStatistic extends StatelessWidget {
         ));
   }
 }
+
+class NumberOfBooksStatistic extends StatelessWidget {
+  final List<Book> books;
+
+  const NumberOfBooksStatistic({Key key, this.books}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 60,
+        child: Column(
+          children: [
+            Text('Number of books in shelf'),
+            Text('${books.length}')
+          ],
+        ));
+  }
+}
