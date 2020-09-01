@@ -6,8 +6,9 @@ import 'package:goodreads_companion/book.dart';
 
 class BookRecommendationsPage extends StatefulWidget {
   final List<Book> books;
+  final List<Book> booksRead;
 
-  BookRecommendationsPage(this.books);
+  BookRecommendationsPage(this.books, this.booksRead);
 
   @override
   _BookRecommendationsPageState createState() =>
@@ -18,9 +19,58 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
   Book selectedBook;
   var random = Random();
   int maxPages;
+  int daysToRead;
+  int averageReadingRate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    List<Book> booksWithData = widget.booksRead
+        .where((book) =>
+            book.dateStartedReading != null &&
+            book.dateFinishedReading != null &&
+            book.numberOfPages != null)
+        .toList();
+
+    if (booksWithData.isNotEmpty) {
+      List<double> readingRates = booksWithData
+          .map((book) =>
+              book.numberOfPages /
+              max(
+                  book.dateFinishedReading
+                      .difference(book.dateStartedReading)
+                      .inDays,
+                  1))
+          .toList();
+
+      averageReadingRate =
+          (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Book> booksWithData = widget.booksRead
+        .where((book) =>
+            book.dateStartedReading != null &&
+            book.dateFinishedReading != null &&
+            book.numberOfPages != null)
+        .toList();
+
+    List<double> readingRates = booksWithData
+        .map((book) =>
+            book.numberOfPages /
+            max(
+                book.dateFinishedReading
+                    .difference(book.dateStartedReading)
+                    .inDays,
+                1))
+        .toList();
+
+    averageReadingRate =
+        (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
+
     return Column(
       children: [
         Row(
@@ -35,12 +85,33 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                   ],
                   onChanged: (input) {
                     if (input == '') {
-                      print('Empty');
                       setState(() => maxPages = null);
                     }
                     setState(() => maxPages = num.parse(input));
                   },
                 ))
+          ],
+        ),
+        Row(
+          children: [
+            Container(
+                width: 300,
+                child: averageReadingRate != null
+                    ? TextField(
+                        decoration:
+                            new InputDecoration(labelText: "Days to read"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (input) {
+                          if (input == '') {
+                            setState(() => daysToRead = null);
+                          }
+                          setState(() => daysToRead = num.parse(input));
+                        },
+                      )
+                    : Container())
           ],
         ),
         FlatButton(
@@ -50,20 +121,30 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
             if (maxPages != null) {
               booksToSearch = booksToSearch
                   .where((book) =>
-              book.numberOfPages != null &&
-                  book.numberOfPages < maxPages)
+                      book.numberOfPages != null &&
+                      book.numberOfPages < maxPages)
                   .toList();
             }
-            setState(() =>
-            selectedBook =
-            booksToSearch[random.nextInt(booksToSearch.length)]);
+            if (daysToRead != null) {
+              booksToSearch = booksToSearch
+                  .where((book) =>
+                      book.numberOfPages != null &&
+                      (book.numberOfPages / averageReadingRate).ceil() <=
+                          daysToRead)
+                  .toList();
+            }
+
+            print(averageReadingRate);
+
+            setState(() => selectedBook = booksToSearch.length == 0
+                ? null
+                : booksToSearch[random.nextInt(booksToSearch.length)]);
           },
         ),
         selectedBook == null
             ? Text('No matches found')
             : Text(
-            '${selectedBook.title}, number of pages: ${selectedBook
-                .numberOfPages}')
+                '${selectedBook.title}, number of pages: ${selectedBook.numberOfPages}')
       ],
     );
   }

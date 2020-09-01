@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 FinishReadingDaysStatistic(books: books),
               ]));
             case RECOMMEND:
-              return BookRecommendationsPage(books);
+              return BookRecommendationsPage(books, library.shelves['read'].books);
             case SETTINGS:
             //TODO Add a settings page
             default:
