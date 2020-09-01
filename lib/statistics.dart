@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 import 'book.dart';
 
@@ -182,15 +183,14 @@ class AverageReadingRateStatistic extends StatelessWidget {
   }
 }
 
-class StartAndFinishReadingDaysStatistic extends StatelessWidget {
+class StartedReadingDaysStatistic extends StatelessWidget {
   final List<Book> books;
 
-  const StartAndFinishReadingDaysStatistic({Key key, this.books})
-      : super(key: key);
+  const StartedReadingDaysStatistic({Key key, this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Map startedReadingCount = {
+    Map<String, double> startedReadingCount = {
       'Monday': 0,
       'Tuesday': 0,
       'Wednesday': 0,
@@ -206,19 +206,12 @@ class StartAndFinishReadingDaysStatistic extends StatelessWidget {
             book.rawDateStartedReading != '')
         .toList();
 
-    List<Book> booksWithFinishedReadingData = books
-        .where((book) =>
-            book.rawDateFinishedReading != null &&
-            book.rawDateFinishedReading != '')
-        .toList();
-
-    if (booksWithStartedReadingData.isEmpty &&
-        booksWithFinishedReadingData.isEmpty) {
+    if (booksWithStartedReadingData.isEmpty) {
       return Container(
           height: 60,
           child: Column(
             children: [
-              Text('Most popular days to start/finish reading'),
+              Text('Most popular days to start reading'),
               Text('No data available')
             ],
           ));
@@ -244,16 +237,50 @@ class StartAndFinishReadingDaysStatistic extends StatelessWidget {
       }
     });
 
-    var sortedStartedReadingKeys = startedReadingCount.keys
-        .toList(growable: false)
-          ..sort((k1, k2) =>
-              startedReadingCount[k1].compareTo(startedReadingCount[k2]));
-    Map startedReadingCountSorted = new Map.fromIterable(
-        sortedStartedReadingKeys,
-        key: (k) => k,
-        value: (k) => startedReadingCount[k]);
+    var chartData = {};
 
-    Map finishedReadingCount = {
+    startedReadingCount.keys.forEach((day) {
+      chartData[day] = () => startedReadingCount[day];
+    });
+
+    return Container(
+        height: 250,
+        child: Column(
+          children: [
+            Text('Most popular days to start reading'),
+            PieChart(
+              dataMap: startedReadingCount,
+            )
+          ],
+        ));
+  }
+}
+
+class FinishReadingDaysStatistic extends StatelessWidget {
+  final List<Book> books;
+
+  const FinishReadingDaysStatistic({Key key, this.books}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Book> booksWithFinishedReadingData = books
+        .where((book) =>
+            book.rawDateFinishedReading != null &&
+            book.rawDateFinishedReading != '')
+        .toList();
+
+    if (booksWithFinishedReadingData.isEmpty) {
+      return Container(
+          height: 60,
+          child: Column(
+            children: [
+              Text('Most popular days to finish reading'),
+              Text('No data available')
+            ],
+          ));
+    }
+
+    Map<String, double> finishedReadingCount = {
       'Monday': 0,
       'Tuesday': 0,
       'Wednesday': 0,
@@ -283,44 +310,21 @@ class StartAndFinishReadingDaysStatistic extends StatelessWidget {
       }
     });
 
-    var sortedFinishedReadingKeys = finishedReadingCount.keys
-        .toList(growable: false)
-          ..sort((k1, k2) =>
-              finishedReadingCount[k1].compareTo(finishedReadingCount[k2]));
-    Map finishedReadingCountSorted = new Map.fromIterable(
-        sortedFinishedReadingKeys,
-        key: (k) => k,
-        value: (k) => finishedReadingCount[k]);
+    var chartData = {};
 
-    print(finishedReadingCountSorted);
-    print(sortedFinishedReadingKeys);
-    print(startedReadingCountSorted);
-    print(sortedStartedReadingKeys);
-
-    String message = '';
-
-    if (startedReadingCount[sortedStartedReadingKeys.last] > 0) {
-      message +=
-          'You usually start reading on a ${sortedStartedReadingKeys.last}';
-      if (finishedReadingCount[sortedFinishedReadingKeys.last] > 0) {
-        message += ' and usually finish on a ${sortedFinishedReadingKeys.last}';
-        if (sortedStartedReadingKeys.last == sortedFinishedReadingKeys.last) {
-          message += ' too!';
-        }
-      }
-    } else if (finishedReadingCount[sortedFinishedReadingKeys.last] > 0) {
-      message +=
-          'You usually finish reading on a ${sortedFinishedReadingKeys.last}';
-    } else {
-      message += 'Data not available';
-    }
+    finishedReadingCount.keys.forEach((day) {
+      chartData[day] = () => finishedReadingCount[day];
+    });
 
     return Container(
-        height: 60,
+        height: 250,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Most popular days to start/finish reading'),
-            Text(message)
+            Text('Most popular days to finish reading'),
+            PieChart(
+              dataMap: finishedReadingCount,
+            )
           ],
         ));
   }

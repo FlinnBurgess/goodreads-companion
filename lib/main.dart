@@ -71,7 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text(books[index].title),
                       ));
             case STATISTICS:
-              return Column(children: [
+              return SingleChildScrollView(
+                  child: Column(children: [
                 BooksReadStatistic(
                   books: books,
                 ),
@@ -87,8 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 AverageReadingRateStatistic(
                   books: books,
                 ),
-                StartAndFinishReadingDaysStatistic(books: books),
-              ]);
+                StartedReadingDaysStatistic(
+                  books: books,
+                ),
+                FinishReadingDaysStatistic(books: books),
+              ]));
             case RECOMMEND:
               return BookRecommendationsPage(books);
             case SETTINGS:
