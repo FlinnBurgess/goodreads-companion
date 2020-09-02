@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:goodreads_companion/book.dart';
 
 class BookRecommendationsPage extends StatefulWidget {
@@ -22,10 +23,14 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
   int daysToRead;
   int averageReadingRate;
   int minimumRating;
+  String selectedAuthor;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    selectedAuthor = 'any';
 
     List<Book> booksWithData = widget.booksRead
         .where((book) =>
@@ -72,8 +77,40 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
     averageReadingRate =
         (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
 
-    return Column(
+    List<String> authors = [];
+
+    widget.books.forEach((book) {
+      authors.add(book.author);
+    });
+
+    authors = authors.toSet().toList();
+    authors.sort((a, b) => a.compareTo(b));
+
+    return SingleChildScrollView(
+        child: Column(
       children: [
+        Row(
+          children: [
+            Container(
+                width: 300,
+                child: TypeAheadField(
+                  suggestionsCallback: (text) => authors
+                      .where((author) =>
+                          author.toLowerCase().contains(text.toLowerCase()))
+                      .toList(),
+                  itemBuilder: (_, match) => Container(child: Text(match)),
+                  onSuggestionSelected: (selected) {
+                    textEditingController.text = selected;
+                    selectedAuthor = selected;
+                  },
+                  textFieldConfiguration: TextFieldConfiguration(
+                      onChanged: (text) =>
+                          selectedAuthor = (text == '' ? null : text),
+                      controller: textEditingController,
+                      decoration: InputDecoration(labelText: 'Author')),
+                ))
+          ],
+        ),
         Row(
           children: [
             Container(
@@ -138,6 +175,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
         FlatButton(
           child: Text('Random book'),
           onPressed: () {
+            print(selectedAuthor);
             List<Book> booksToSearch = List.from(widget.books);
             if (maxPages != null) {
               booksToSearch = booksToSearch
@@ -159,6 +197,11 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                   .where((book) => book.averageRating >= minimumRating)
                   .toList();
             }
+            if (selectedAuthor != null) {
+              booksToSearch = booksToSearch
+                  .where((book) => book.author == selectedAuthor)
+                  .toList();
+            }
 
             setState(() => selectedBook = booksToSearch.length == 0
                 ? null
@@ -167,9 +210,8 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
         ),
         selectedBook == null
             ? Text('No matches found')
-            : Text(
-                '${selectedBook.title}, avg rating: ${selectedBook.averageRating}')
+            : Text('${selectedBook.title}, author: ${selectedBook.author}')
       ],
-    );
+    ));
   }
 }
