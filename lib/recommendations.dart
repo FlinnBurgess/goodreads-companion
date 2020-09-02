@@ -21,6 +21,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
   int maxPages;
   int daysToRead;
   int averageReadingRate;
+  int minimumRating;
 
   @override
   void initState() {
@@ -114,6 +115,26 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                     : Container())
           ],
         ),
+        Row(
+          children: [
+            Container(
+                width: 300,
+                child: TextField(
+                  decoration:
+                      new InputDecoration(labelText: "Minimum avg rating"),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  onChanged: (input) {
+                    if (input == '') {
+                      setState(() => minimumRating = null);
+                    }
+                    setState(() => minimumRating = num.parse(input));
+                  },
+                ))
+          ],
+        ),
         FlatButton(
           child: Text('Random book'),
           onPressed: () {
@@ -133,8 +154,11 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                           daysToRead)
                   .toList();
             }
-
-            print(averageReadingRate);
+            if (minimumRating != null) {
+              booksToSearch = booksToSearch
+                  .where((book) => book.averageRating >= minimumRating)
+                  .toList();
+            }
 
             setState(() => selectedBook = booksToSearch.length == 0
                 ? null
@@ -144,7 +168,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
         selectedBook == null
             ? Text('No matches found')
             : Text(
-                '${selectedBook.title}, number of pages: ${selectedBook.numberOfPages}')
+                '${selectedBook.title}, avg rating: ${selectedBook.averageRating}')
       ],
     );
   }

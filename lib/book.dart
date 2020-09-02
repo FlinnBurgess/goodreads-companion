@@ -48,8 +48,12 @@ class Book {
     numberOfPages = bookXml.getElement('num_pages').text == ''
         ? null
         : num.parse(bookXml.getElement('num_pages').text);
-    averageRating = num.parse(bookXml.getElement('average_rating').text);
-    numberOfRatings = num.parse(bookXml.getElement('ratings_count').text);
+    averageRating = bookXml.getElement('average_rating').text == ''
+        ? null
+        : num.parse(bookXml.getElement('average_rating').text);
+    numberOfRatings = bookXml.getElement('ratings_count').text == ''
+        ? null
+        : num.parse(bookXml.getElement('ratings_count').text);
     author = bookXml
         .getElement('authors')
         .getElement('author')
