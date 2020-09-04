@@ -12,13 +12,17 @@ import 'book.dart';
 class Library extends ChangeNotifier {
   Map<String, Shelf> _shelves;
   bool populationStarted;
+  bool _readyToPopulate = false;
 
   Library() {
-    _shelves = {};
     populationStarted = false;
   }
 
   void addShelf(String name, int size) {
+    if (_shelves == null) {
+      _shelves = {};
+    }
+
     _shelves[name] = Shelf(name, size);
     notifyListeners();
   }
@@ -34,6 +38,9 @@ class Library extends ChangeNotifier {
   }
 
   bool isPopulated() {
+    if (_shelves == null) {
+      return false;
+    }
     return _shelves.values.where((shelf) => shelf.books == null).isEmpty;
   }
 
@@ -84,4 +91,11 @@ class Library extends ChangeNotifier {
   }
 
   Map<String, Shelf> get shelves => _shelves;
+
+  bool get readyToPopulate => _readyToPopulate;
+
+  set readyToPopulate(bool value) {
+    _readyToPopulate = value;
+    notifyListeners();
+  }
 }

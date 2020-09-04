@@ -1,19 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:goodreads_companion/authentication.dart';
 import 'package:goodreads_companion/recommendations.dart';
 import 'package:goodreads_companion/shelf.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
+import 'package:oauth1/oauth1.dart' as oauth1;
 
 import 'book.dart';
 import 'library.dart';
+import 'user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Library library = await Library.load();
+  User user = await User.load();
+  Authentication authentication = await Authentication.load();
 
-  runApp(ChangeNotifierProvider(create: (_) => library, child: MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => library,
+      ),
+      ChangeNotifierProvider(
+        create: (_) => user,
+      ),
+      ChangeNotifierProvider(
+        create: (_) => authentication,
+      ),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -48,10 +69,72 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int _selectedPage = BOOKS_LIST;
 
+  String userIdInput;
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<Library>(builder: (context, library, _) {
-      _populateLibrary(library);
+    return Consumer3<Library, User, Authentication>(
+        builder: (context, library, user, authentication, _) {
+      if (user.userId == null) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Goodreads Companion'),
+          ),
+          body: Center(
+            child: Column(
+              children: [
+                Text('Enter your goodreads ID'),
+                Text(
+                    'This is the number shown in the URL of the goodreads website when you click on "My Books"'),
+                TextField(
+                  decoration: new InputDecoration(labelText: "Goodreads ID"),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  onChanged: (input) {
+                    if (input == '') {
+                      setState(() => userIdInput = null);
+                    }
+                    setState(() => userIdInput = input);
+                  },
+                ),
+                RaisedButton(
+                  onPressed: () => user.userId = userIdInput,
+                  child: Text('Save'),
+                )
+              ],
+            ),
+          ),
+        );
+      }
+
+      _populateLibrary(library, user, authentication);
+
+      if (authentication.needsAuthentication) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Goodreads Companion'),
+          ),
+          body: Center(
+            child: Column(
+              children: [
+                Text('In order to access your books'),
+                RaisedButton(
+                  onPressed: () {
+                    _authenticateUser(authentication);
+                  },
+                  child: Text('Authenticate'),
+                ),
+                RaisedButton(
+                  onPressed: () => _getAccessToken(authentication),
+                  child: Text('Done'),
+                )
+              ],
+            ),
+          ),
+        );
+      }
 
       if (library.isPopulated()) {
         var tabs = library.shelves.keys
@@ -97,7 +180,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 FinishReadingDaysStatistic(books: books),
               ]));
             case RECOMMEND:
-              return BookRecommendationsPage(books, library.shelves['read'].books);
+              return BookRecommendationsPage(
+                  books, library.shelves['read'].books);
             case SETTINGS:
             //TODO Add a settings page
             default:
@@ -135,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         );
-      } else if (library.shelves.isNotEmpty) {
+      } else if (library.shelves != null && library.shelves.isNotEmpty) {
         return Scaffold(
           appBar: AppBar(
             title: Text('Goodreads Companion'),
@@ -157,10 +241,47 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _populateLibrary(Library library) async {
-    if (library.shelves.isEmpty && !library.populationStarted) {
+  void _populateLibrary(
+      Library library, User user, Authentication authentication) async {
+    oauth1.Client oauthClient;
+    Future<http.Response> Function(String) getGoodreadsResponse;
+
+    if (authentication.accessCredentials == null) {
+      getGoodreadsResponse = (url) => http.get(url);
+
+      http.Response response = await getGoodreadsResponse(
+          'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=read&per_page=1');
+
+      if (response.statusCode == 403) {
+        authentication.needsAuthentication = true;
+        return;
+      } else {
+        library.readyToPopulate = true;
+        authentication.needsAuthentication = false;
+      }
+    } else {
+      oauthClient = new oauth1.Client(Authentication.platform.signatureMethod,
+          Authentication.clientCredentials, authentication.accessCredentials);
+
+      getGoodreadsResponse = (url) => oauthClient.get(url);
+
+      http.Response response = await getGoodreadsResponse(
+          'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=read&per_page=1');
+
+      if ([403, 401].contains(response.statusCode)) {
+        authentication.needsAuthentication = true;
+        return;
+      } else {
+        library.readyToPopulate = true;
+        authentication.needsAuthentication = false;
+      }
+    }
+
+    if (library.readyToPopulate &&
+        library.shelves == null &&
+        !library.populationStarted) {
       library.populationStarted = true;
-      http.Response response = await http.get(
+      http.Response response = await getGoodreadsResponse(
           'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=45519898');
       var xml = XmlDocument.parse(response.body);
       xml
@@ -171,6 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
               shelfXml.getElement('name').text,
               num.parse(shelfXml.getElement('book_count').text)));
 
+      print('Beginning loop through shelves');
       for (var shelfName in library.shelves.keys) {
         int booksRemaining = library.shelves[shelfName].size;
         int page = 1;
@@ -179,7 +301,8 @@ class _MyHomePageState extends State<MyHomePage> {
         List<XmlElement> allReviewsXml = [];
 
         while (booksRemaining > 0) {
-          http.Response response = await http.get(url + '&page=$page');
+          http.Response response =
+              await getGoodreadsResponse(url + '&page=$page');
           var xml = XmlDocument.parse(response.body);
           allReviewsXml.addAll(xml
               .getElement('GoodreadsResponse')
@@ -215,6 +338,40 @@ class _MyHomePageState extends State<MyHomePage> {
 //    });
 
     return books;
+  }
+
+  Future<void> _authenticateUser(Authentication authentication) async {
+    var platform = oauth1.Platform(
+        'https://www.goodreads.com/oauth/request_token',
+        'https://www.goodreads.com/oauth/authorize',
+        'https://www.goodreads.com/oauth/access_token',
+        oauth1.SignatureMethods.hmacSha1);
+
+    const String apiKey = 'f4gRbjUEvwrshiwBhwQ';
+    const String apiSecret = 'mc7GsVj8cjOgwKkREkbKwQwR0eqeRtO0hBhs3LgC8';
+    var clientCredentials = new oauth1.ClientCredentials(apiKey, apiSecret);
+
+    var auth = new oauth1.Authorization(clientCredentials, platform);
+
+    Authentication.authorization
+        .requestTemporaryCredentials('oob')
+        .then((res) async {
+      authentication.temporaryCredentials = res.credentials;
+
+      var url =
+          '${auth.getResourceOwnerAuthorizationURI(res.credentials.token)}';
+
+      launch(url, forceWebView: true);
+    });
+  }
+
+  Future<void> _getAccessToken(Authentication authentication) async {
+    Authentication.authorization
+        .requestTokenCredentials(authentication.temporaryCredentials, '1')
+        .then((response) {
+      authentication.accessCredentials = response.credentials;
+      authentication.needsAuthentication = false;
+    });
   }
 }
 

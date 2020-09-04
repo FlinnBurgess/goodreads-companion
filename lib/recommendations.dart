@@ -175,7 +175,6 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
         FlatButton(
           child: Text('Random book'),
           onPressed: () {
-            print(selectedAuthor);
             List<Book> booksToSearch = List.from(widget.books);
             if (maxPages != null) {
               booksToSearch = booksToSearch
