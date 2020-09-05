@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedPage = BOOKS_LIST;
 
   String userIdInput;
+  String userIdInputError;
 
   @override
   Widget build(BuildContext context) {
@@ -93,16 +94,45 @@ class _MyHomePageState extends State<MyHomePage> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   onChanged: (input) {
-                    if (input == '') {
+                    if (input.replaceAll(' ', '') == '') {
                       setState(() => userIdInput = null);
                     }
                     setState(() => userIdInput = input);
                   },
                 ),
                 RaisedButton(
-                  onPressed: () => user.userId = userIdInput,
+                  onPressed: () {
+                    setState(() {
+                      userIdInputError = null;
+                    });
+                    if (userIdInput == null) {
+                      setState(() {
+                        userIdInputError = 'Please enter your user ID';
+                      });
+                    } else {
+                      http
+                          .get(
+                              'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=$userIdInput}')
+                          .then((response) {
+                        if (response.statusCode == 404) {
+                          setState(() {
+                            userIdInputError =
+                                'User $userIdInput doesn\'t seem to exist! Double check that you entered the correct ID.';
+                          });
+                        } else {
+                          user.userId = userIdInput;
+                        }
+                      });
+                    }
+                  },
                   child: Text('Save'),
-                )
+                ),
+                userIdInputError == null
+                    ? Container()
+                    : Text(
+                        userIdInputError,
+                        style: TextStyle(color: Colors.red),
+                      )
               ],
             ),
           ),
