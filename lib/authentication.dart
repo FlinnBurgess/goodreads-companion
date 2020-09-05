@@ -11,13 +11,15 @@ class Authentication extends ChangeNotifier {
   Credentials _temporaryCredentials;
   Credentials _accessCredentials;
 
+  static const API_KEY = 'f4gRbjUEvwrshiwBhwQ';
+
   static Platform platform = Platform(
       'https://www.goodreads.com/oauth/request_token',
       'https://www.goodreads.com/oauth/authorize',
       'https://www.goodreads.com/oauth/access_token',
       SignatureMethods.hmacSha1);
   static ClientCredentials clientCredentials = ClientCredentials(
-      'f4gRbjUEvwrshiwBhwQ', 'mc7GsVj8cjOgwKkREkbKwQwR0eqeRtO0hBhs3LgC8');
+      API_KEY, 'mc7GsVj8cjOgwKkREkbKwQwR0eqeRtO0hBhs3LgC8');
 
   static Authorization authorization =
       Authorization(clientCredentials, platform);

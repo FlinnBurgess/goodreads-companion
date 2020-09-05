@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:goodreads_companion/authentication.dart';
 import 'package:goodreads_companion/recommendations.dart';
 import 'package:goodreads_companion/shelf.dart';
@@ -71,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String userIdInput;
   String userIdInputError;
+  Widget userCheckResultMessage;
 
   String authenticationErrorMessage;
 
@@ -89,32 +89,78 @@ class _MyHomePageState extends State<MyHomePage> {
                 Text('Enter your goodreads ID'),
                 Text(
                     'This is the number shown in the URL of the goodreads website when you click on "My Books"'),
-                TextField(
-                  decoration: new InputDecoration(labelText: "Goodreads ID"),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  onChanged: (input) {
-                    if (input.replaceAll(' ', '') == '') {
-                      setState(() => userIdInput = null);
-                    }
-                    setState(() => userIdInput = input);
-                  },
-                ),
+                Row(children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: TextField(
+                        decoration:
+                            new InputDecoration(labelText: "Goodreads ID"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (input) {
+                          if (input.replaceAll(' ', '') == '') {
+                            setState(() => userIdInput = null);
+                          }
+                          setState(() => userIdInput = input);
+                        },
+                      )),
+                  RaisedButton(
+                    child: Text('Check ID'),
+                    onPressed: () {
+                      setState(() {
+                        userCheckResultMessage = null;
+                      });
+
+                      if (userIdInput == null || userIdInput.replaceAll(' ', '') == '') {
+                        return;
+                      }
+
+                      userCheckResultMessage = CircularProgressIndicator();
+
+                      http
+                          .get(
+                              'https://www.goodreads.com/user/show/$userIdInput.xml?key=${Authentication.API_KEY}')
+                          .then((response) {
+                        if (response.statusCode == 404) {
+                          setState(() {
+                            userCheckResultMessage = Text(
+                              'User does not exist',
+                              style: TextStyle(color: Colors.red),
+                            );
+                          });
+                        } else {
+                          var xml = XmlDocument.parse(response.body);
+                          var name =
+                              xml.getElement('GoodreadsResponse').getElement('user').getElement('name').text;
+                          setState(() {
+                            userCheckResultMessage = Text(
+                              'User ID $userIdInput belongs to $name',
+                              style: TextStyle(color: Colors.green),
+                            );
+                          });
+                        }
+                      });
+                    },
+                  )
+                ]),
+                userCheckResultMessage == null
+                    ? Container()
+                    : userCheckResultMessage,
                 RaisedButton(
                   onPressed: () {
                     setState(() {
                       userIdInputError = null;
                     });
-                    if (userIdInput == null) {
+                    if (userIdInput == null || userIdInput.replaceAll(' ', '') == '') {
                       setState(() {
-                        userIdInputError = 'Please enter your user ID';
+                        userIdInputError = 'Please enter a user ID';
                       });
                     } else {
                       http
                           .get(
-                              'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=$userIdInput}')
+                              'https://www.goodreads.com/shelf/list.xml?key=${Authentication.API_KEY}&user_id=$userIdInput}')
                           .then((response) {
                         if (response.statusCode == 404) {
                           setState(() {
@@ -143,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       print('NEEDS AUTHENTICATION: ${authentication.needsAuthentication}');
 
-      if (!library.isPopulated()){
+      if (!library.isPopulated()) {
         _populateLibrary(library, user, authentication);
       }
 
@@ -165,11 +211,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 RaisedButton(
                   onPressed: () {
                     var authenticationErrorResponse = () => setState(() {
-                      authenticationErrorMessage =
-                      'Something went wrong! Make sure that you entered your username and password while logging in; opening the app isn\'t enough on its own.\nAlternatively, you can make your goodreads account public in the settings in order to skip this step.';
-                    });
+                          authenticationErrorMessage =
+                              'Something went wrong! Make sure that you entered your username and password while logging in; opening the app isn\'t enough on its own.\nAlternatively, you can make your goodreads account public in the settings in order to skip this step.';
+                        });
 
-                    _getAccessToken(authentication, authenticationErrorResponse);
+                    _getAccessToken(
+                        authentication, authenticationErrorResponse);
                   },
                   child: Text('Done'),
                 ),
@@ -299,7 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
       getGoodreadsResponse = (url) => http.get(url);
 
       http.Response response = await getGoodreadsResponse(
-          'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=read&per_page=1');
+          'https://www.goodreads.com/review/list/${user.userId}.xml?key=${Authentication.API_KEY}&v=2&shelf=read&per_page=1');
 
       if (response.statusCode == 403) {
         authentication.needsAuthentication = true;
@@ -315,12 +362,12 @@ class _MyHomePageState extends State<MyHomePage> {
       getGoodreadsResponse = (url) => oauthClient.get(url);
 
       http.Response response = await getGoodreadsResponse(
-          'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=read&per_page=1');
+          'https://www.goodreads.com/review/list/${user.userId}.xml?key=${Authentication.API_KEY}&v=2&shelf=read&per_page=1');
 
       if ([403, 401].contains(response.statusCode)) {
         setState(() {
           userIdInputError =
-          'It seems that the user ID you entered ($userIdInput)\na) Doesn\'t belong to you\nb) Doesn\'t belong to a Goodreads friend\nand c) Doesn\'t belong to a user with their profile set to public. \nEnter an ID which satisfies one of these requirements and try again.';
+              'It seems that the user ID you entered ($userIdInput)\na) Doesn\'t belong to you\nb) Doesn\'t belong to a Goodreads friend\nand c) Doesn\'t belong to a user with their profile set to public. \nEnter an ID which satisfies one of these requirements and try again.';
         });
         user.userId = null;
         library.reset();
@@ -337,7 +384,7 @@ class _MyHomePageState extends State<MyHomePage> {
         !library.populationStarted) {
       library.populationStarted = true;
       http.Response response = await getGoodreadsResponse(
-          'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=${user.userId}');
+          'https://www.goodreads.com/shelf/list.xml?key=${Authentication.API_KEY}&user_id=${user.userId}');
 
       var xml = XmlDocument.parse(response.body);
       xml
@@ -352,7 +399,7 @@ class _MyHomePageState extends State<MyHomePage> {
         int booksRemaining = library.shelves[shelfName].size;
         int page = 1;
         var url =
-            'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=$shelfName&per_page=$BOOK_RETRIEVAL_PAGE_SIZE';
+            'https://www.goodreads.com/review/list/${user.userId}.xml?key=${Authentication.API_KEY}&v=2&shelf=$shelfName&per_page=$BOOK_RETRIEVAL_PAGE_SIZE';
         List<XmlElement> allReviewsXml = [];
 
         while (booksRemaining > 0) {
@@ -404,11 +451,8 @@ class _MyHomePageState extends State<MyHomePage> {
         'https://www.goodreads.com/oauth/access_token',
         oauth1.SignatureMethods.hmacSha1);
 
-    const String apiKey = 'f4gRbjUEvwrshiwBhwQ';
-    const String apiSecret = 'mc7GsVj8cjOgwKkREkbKwQwR0eqeRtO0hBhs3LgC8';
-    var clientCredentials = new oauth1.ClientCredentials(apiKey, apiSecret);
-
-    var auth = new oauth1.Authorization(clientCredentials, platform);
+    var auth =
+        new oauth1.Authorization(Authentication.clientCredentials, platform);
 
     Authentication.authorization
         .requestTemporaryCredentials('oob')
@@ -422,7 +466,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _getAccessToken(Authentication authentication, Function onError) async {
+  Future<void> _getAccessToken(
+      Authentication authentication, Function onError) async {
     Authentication.authorization
         .requestTokenCredentials(authentication.temporaryCredentials, '1')
         .then((response) {
