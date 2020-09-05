@@ -6,10 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
 class User extends ChangeNotifier {
-  bool _needsAuthentication = false;
   String _userId;
 
   User();
+
+  void reset() {
+    _userId = null;
+    notifyListeners();
+  }
 
   Future<void> save() async {
     try {
@@ -22,7 +26,6 @@ class User extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     return {
-      'needsAuthentication': _needsAuthentication,
       'userId': _userId
     };
   }
@@ -41,8 +44,6 @@ class User extends ChangeNotifier {
 
   User.fromJson(String json) {
     Map<String, dynamic> decoded = jsonDecode(json);
-
-    _needsAuthentication = decoded['needsAuthentication'];
     _userId = decoded['userId'];
   }
 
@@ -63,13 +64,6 @@ class User extends ChangeNotifier {
   set userId(String value) {
     _userId = value;
     save();
-    notifyListeners();
-  }
-
-  bool get needsAuthentication => _needsAuthentication;
-
-  set needsAuthentication(bool value) {
-    _needsAuthentication = value;
     notifyListeners();
   }
 }

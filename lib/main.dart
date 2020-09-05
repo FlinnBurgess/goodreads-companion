@@ -72,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String userIdInput;
   String userIdInputError;
 
+  String authenticationErrorMessage;
+
   @override
   Widget build(BuildContext context) {
     return Consumer3<Library, User, Authentication>(
@@ -139,7 +141,11 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
 
-      _populateLibrary(library, user, authentication);
+      print('NEEDS AUTHENTICATION: ${authentication.needsAuthentication}');
+
+      if (!library.isPopulated()){
+        _populateLibrary(library, user, authentication);
+      }
 
       if (authentication.needsAuthentication) {
         return Scaffold(
@@ -154,12 +160,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     _authenticateUser(authentication);
                   },
-                  child: Text('Authenticate'),
+                  child: Text('Log in to Goodreads'),
                 ),
                 RaisedButton(
-                  onPressed: () => _getAccessToken(authentication),
+                  onPressed: () {
+                    var authenticationErrorResponse = () => setState(() {
+                      authenticationErrorMessage =
+                      'Something went wrong! Make sure that you entered your username and password while logging in; opening the app isn\'t enough on its own.\nAlternatively, you can make your goodreads account public in the settings in order to skip this step.';
+                    });
+
+                    _getAccessToken(authentication, authenticationErrorResponse);
+                  },
                   child: Text('Done'),
-                )
+                ),
+                authenticationErrorMessage == null
+                    ? Container()
+                    : Text(
+                        authenticationErrorMessage,
+                        style: TextStyle(color: Colors.red),
+                      )
               ],
             ),
           ),
@@ -299,7 +318,13 @@ class _MyHomePageState extends State<MyHomePage> {
           'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=read&per_page=1');
 
       if ([403, 401].contains(response.statusCode)) {
-        authentication.needsAuthentication = true;
+        setState(() {
+          userIdInputError =
+          'It seems that the user ID you entered ($userIdInput)\na) Doesn\'t belong to you\nb) Doesn\'t belong to a Goodreads friend\nand c) Doesn\'t belong to a user with their profile set to public. \nEnter an ID which satisfies one of these requirements and try again.';
+        });
+        user.userId = null;
+        library.reset();
+        user.reset();
         return;
       } else {
         library.readyToPopulate = true;
@@ -312,7 +337,8 @@ class _MyHomePageState extends State<MyHomePage> {
         !library.populationStarted) {
       library.populationStarted = true;
       http.Response response = await getGoodreadsResponse(
-          'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=45519898');
+          'https://www.goodreads.com/shelf/list.xml?key=f4gRbjUEvwrshiwBhwQ&user_id=${user.userId}');
+
       var xml = XmlDocument.parse(response.body);
       xml
           .getElement('GoodreadsResponse')
@@ -322,17 +348,18 @@ class _MyHomePageState extends State<MyHomePage> {
               shelfXml.getElement('name').text,
               num.parse(shelfXml.getElement('book_count').text)));
 
-      print('Beginning loop through shelves');
       for (var shelfName in library.shelves.keys) {
         int booksRemaining = library.shelves[shelfName].size;
         int page = 1;
         var url =
-            'https://www.goodreads.com/review/list/45519898.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=$shelfName&per_page=$BOOK_RETRIEVAL_PAGE_SIZE';
+            'https://www.goodreads.com/review/list/${user.userId}.xml?key=f4gRbjUEvwrshiwBhwQ&v=2&shelf=$shelfName&per_page=$BOOK_RETRIEVAL_PAGE_SIZE';
         List<XmlElement> allReviewsXml = [];
 
         while (booksRemaining > 0) {
+          print('Hitting the url: ${url + '&page=$page'}');
           http.Response response =
               await getGoodreadsResponse(url + '&page=$page');
+
           var xml = XmlDocument.parse(response.body);
           allReviewsXml.addAll(xml
               .getElement('GoodreadsResponse')
@@ -389,18 +416,20 @@ class _MyHomePageState extends State<MyHomePage> {
       authentication.temporaryCredentials = res.credentials;
 
       var url =
-          '${auth.getResourceOwnerAuthorizationURI(res.credentials.token)}';
+          '${auth.getResourceOwnerAuthorizationURI(res.credentials.token)}&mobile=1';
 
       launch(url, forceWebView: true);
     });
   }
 
-  Future<void> _getAccessToken(Authentication authentication) async {
+  Future<void> _getAccessToken(Authentication authentication, Function onError) async {
     Authentication.authorization
         .requestTokenCredentials(authentication.temporaryCredentials, '1')
         .then((response) {
       authentication.accessCredentials = response.credentials;
       authentication.needsAuthentication = false;
+    }).catchError((error) {
+      onError();
     });
   }
 }

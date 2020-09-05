@@ -44,6 +44,13 @@ class Library extends ChangeNotifier {
     return _shelves.values.where((shelf) => shelf.books == null).isEmpty;
   }
 
+  void reset() {
+    _shelves = null;
+    populationStarted = false;
+    _readyToPopulate = false;
+    notifyListeners();
+  }
+
   Future<void> save() async {
     try {
       final file = await _localFile;
