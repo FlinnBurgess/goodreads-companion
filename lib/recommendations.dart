@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:goodreads_companion/book.dart';
+import 'package:goodreads_companion/book_display.dart';
 
 class BookRecommendationsPage extends StatefulWidget {
   final List<Book> books;
@@ -55,6 +56,8 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double inputSize = min(MediaQuery.of(context).size.width * 0.4, 250);
+
     List<Book> booksWithData = widget.booksRead
         .where((book) =>
             book.dateStartedReading != null &&
@@ -87,16 +90,35 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
     return SingleChildScrollView(
         child: Column(
       children: [
+        Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: MediaQuery.of(context).size.width * 0.1),
+            child: Text(
+              'Get a random book from your shelf matching the criteria below.',
+              textAlign: TextAlign.center,
+            )),
+        Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: MediaQuery.of(context).size.width * 0.1),
+            child: Text(
+              'Leave all boxes empty to get a completely random book',
+              textAlign: TextAlign.center,
+            )),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-                width: 300,
+                width: inputSize,
                 child: TypeAheadField(
                   suggestionsCallback: (text) => authors
                       .where((author) =>
                           author.toLowerCase().contains(text.toLowerCase()))
                       .toList(),
-                  itemBuilder: (_, match) => Container(child: Text(match)),
+                  itemBuilder: (_, match) => Container(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: Text(match)),
                   onSuggestionSelected: (selected) {
                     textEditingController.text = selected;
                     selectedAuthor = selected;
@@ -106,13 +128,9 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                           selectedAuthor = (text == '' ? null : text),
                       controller: textEditingController,
                       decoration: InputDecoration(labelText: 'Author')),
-                ))
-          ],
-        ),
-        Row(
-          children: [
+                )),
             Container(
-                width: 300,
+                width: inputSize,
                 child: TextField(
                   decoration: new InputDecoration(labelText: "Max pages"),
                   keyboardType: TextInputType.number,
@@ -129,9 +147,10 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-                width: 300,
+                width: inputSize,
                 child: averageReadingRate != null
                     ? TextField(
                         decoration:
@@ -147,13 +166,9 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                           setState(() => daysToRead = num.parse(input));
                         },
                       )
-                    : Container())
-          ],
-        ),
-        Row(
-          children: [
+                    : Container()),
             Container(
-                width: 300,
+                width: inputSize,
                 child: TextField(
                   decoration:
                       new InputDecoration(labelText: "Minimum avg rating"),
@@ -207,7 +222,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
         ),
         selectedBook == null
             ? Text('No matches found')
-            : Text('${selectedBook.title}, author: ${selectedBook.author}')
+            : BookDisplay(book: selectedBook,)
       ],
     ));
   }
