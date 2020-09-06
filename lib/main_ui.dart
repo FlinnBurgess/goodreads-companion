@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goodreads_companion/settings_page.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:provider/provider.dart';
 
@@ -66,7 +67,7 @@ class _MainUIState extends State<MainUI> {
             return BookRecommendationsPage(
                 books, library.shelves['read'].books);
           case SETTINGS:
-          //TODO Add a settings page
+            return SettingsPage();
           default:
             return Text('Number of books: ${books.length}');
         }

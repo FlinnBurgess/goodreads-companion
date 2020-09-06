@@ -11,7 +11,7 @@ import 'book.dart';
 
 class Library extends ChangeNotifier {
   Map<String, Shelf> _shelves;
-  bool populationStarted;
+  bool populationStarted = false;
   bool _readyToPopulate = false;
 
   Library() {

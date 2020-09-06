@@ -66,10 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Consumer3<Library, User, Authentication>(
         builder: (context, library, user, authentication, _) {
       if (user.userId == null) {
+        print('showing user input page');
         return UserIDInputPage(userIdInputError);
       }
 
-      if (!library.populationStarted) {
+      if (!library.populationStarted && !library.isPopulated()) {
+        print('populating library, user ID: ${user.userId}');
         _populateLibrary(library, user, authentication);
       }
 
@@ -168,7 +170,6 @@ class _MyHomePageState extends State<MyHomePage> {
         List<XmlElement> allReviewsXml = [];
 
         while (booksRemaining > 0) {
-          print('Hitting the url: ${url + '&page=$page'}');
           http.Response response =
               await getGoodreadsResponse(url + '&page=$page');
 
