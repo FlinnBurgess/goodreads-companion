@@ -7,7 +7,7 @@ import 'package:oauth1/oauth1.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Authentication extends ChangeNotifier {
-  bool _needsAuthentication = false;
+  bool _needsAuthentication;
   Credentials _temporaryCredentials;
   Credentials _accessCredentials;
 
