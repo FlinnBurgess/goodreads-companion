@@ -159,9 +159,11 @@ packages:
   oauth1:
     dependency: "direct main"
     description:
-      name: oauth1
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: e21b67df2cef2273aa27dda339f053118a1fccb8
+      url: "https://github.com/FlinnBurgess/dart-oauth1"
+    source: git
     version: "1.0.5"
   path:
     dependency: transitive

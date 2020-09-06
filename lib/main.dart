@@ -19,7 +19,7 @@ Future<void> main() async {
   Library library = await Library.load();
   User user = await User.load();
   Authentication authentication = await Authentication.load();
-  Settings settings = await Settings();
+  Settings settings = await Settings.load();
 
   runApp(MultiProvider(
     providers: [

@@ -31,7 +31,9 @@ dependencies:
   pie_chart: ^3.1.1
   flutter_typeahead: ^1.8.8
   url_launcher: ^5.0.0
-  oauth1: ^1.0.5
+  oauth1:
+    git:
+      url: https://github.com/FlinnBurgess/dart-oauth1
   flutter_web_auth: ^0.2.4
 
 dev_dependencies:
