@@ -129,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'https://www.goodreads.com/review/list/${user.userId}.xml?key=${Authentication.API_KEY}&v=2&shelf=read&per_page=1');
 
       if ([403, 401].contains(response.statusCode)) {
+        authentication.needsAuthentication = false;
         setState(() {
           userIdInputError =
               'It seems that the user ID you entered (${user.userId})\na) Doesn\'t belong to you\nb) Doesn\'t belong to a Goodreads friend\nand c) Doesn\'t belong to a user with a public profile.\nEnter an ID which satisfies one of these requirements and try again.';

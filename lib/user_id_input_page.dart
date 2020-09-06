@@ -29,8 +29,8 @@ class _UserIDInputPageState extends State<UserIDInputPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<User>(
-      builder: (context, user, _) {
+    return Consumer2<User, Authentication>(
+      builder: (context, user, authentication, _) {
         return Scaffold(
           appBar: AppBar(
             title: Text('Goodreads Companion'),
@@ -134,6 +134,7 @@ class _UserIDInputPageState extends State<UserIDInputPage> {
                                 'User $userIdInput doesn\'t seem to exist! Double check that you entered the correct ID.';
                           });
                         } else {
+                          authentication.needsAuthentication = false;
                           user.userId = userIdInput;
                         }
                       });
