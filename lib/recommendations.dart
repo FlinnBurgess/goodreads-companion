@@ -30,8 +30,6 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
   void initState() {
     super.initState();
 
-    selectedAuthor = 'any';
-
     List<Book> booksWithData = widget.booksRead
         .where((book) =>
             book.dateStartedReading != null &&
@@ -196,9 +194,9 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                   .where((book) => book.averageRating >= minimumRating)
                   .toList();
             }
-            if (selectedAuthor != null) {
+            if (selectedAuthor != null && selectedAuthor.trim() != '') {
               booksToSearch = booksToSearch
-                  .where((book) => book.author == selectedAuthor)
+                  .where((book) => book.author == selectedAuthor.trim())
                   .toList();
             }
 

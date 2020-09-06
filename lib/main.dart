@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goodreads_companion/authentication.dart';
 import 'package:goodreads_companion/authentication_page.dart';
 import 'package:goodreads_companion/main_ui.dart';
+import 'package:goodreads_companion/settings.dart';
 import 'package:goodreads_companion/shelf.dart';
 import 'package:goodreads_companion/user_id_input_page.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,7 @@ Future<void> main() async {
   Library library = await Library.load();
   User user = await User.load();
   Authentication authentication = await Authentication.load();
+  Settings settings = await Settings();
 
   runApp(MultiProvider(
     providers: [
@@ -29,6 +31,9 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => authentication,
+      ),
+      ChangeNotifierProvider(
+        create: (_) => settings,
       ),
     ],
     child: MyApp(),
@@ -63,16 +68,46 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<Library, User, Authentication>(
-        builder: (context, library, user, authentication, _) {
+    return Consumer4<Library, User, Authentication, Settings>(
+        builder: (context, library, user, authentication, settings, _) {
+      if (DateTime.now().difference(settings.lastDownloaded).inDays >= 1) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Goodreads Companion'),
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  'Due to Goodreads policy, the app is not able to store data for more than 24 hours.'),
+              Text('To continue using the app, please refresh your book data.'),
+              RaisedButton(
+                child: Text('Refresh Data'),
+                onPressed: () {
+                  settings.lastDownloaded = DateTime.now();
+                  library.reset();
+                },
+              ),
+              Text('This is also a good opportunity to switch to a different user ID.'),
+              RaisedButton(
+                child: Text('Change User'),
+                onPressed: () {
+                  settings.lastDownloaded = DateTime.now();
+                  user.reset();
+                  library.reset();
+                },
+              )
+            ],
+          ),
+        );
+      }
+
       if (user.userId == null) {
-        print('showing user input page');
         return UserIDInputPage(userIdInputError);
       }
 
       if (!library.populationStarted && !library.isPopulated()) {
-        print('populating library, user ID: ${user.userId}');
-        _populateLibrary(library, user, authentication);
+        _populateLibrary(library, user, authentication, settings);
       }
 
       if (authentication.needsAuthentication) {
@@ -103,8 +138,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _populateLibrary(
-      Library library, User user, Authentication authentication) async {
+  void _populateLibrary(Library library, User user,
+      Authentication authentication, Settings settings) async {
     oauth1.Client oauthClient;
     Future<http.Response> Function(String) getGoodreadsResponse;
 
@@ -191,6 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       library.save();
+      settings.lastDownloaded = DateTime.now();
     }
   }
 
