@@ -34,7 +34,7 @@ dependencies:
   oauth1:
     git:
       url: https://github.com/FlinnBurgess/dart-oauth1
-  flutter_web_auth: ^0.2.4
+  flutter_rating_bar: ^3.0.1+1
 
 dev_dependencies:
   flutter_test:
