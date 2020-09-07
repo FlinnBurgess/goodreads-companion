@@ -4,6 +4,7 @@ import 'package:goodreads_companion/authentication_page.dart';
 import 'package:goodreads_companion/main_ui.dart';
 import 'package:goodreads_companion/settings.dart';
 import 'package:goodreads_companion/shelf.dart';
+import 'package:goodreads_companion/statistics.dart';
 import 'package:goodreads_companion/user_id_input_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -88,7 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   library.reset();
                 },
               ),
-              Text('This is also a good opportunity to switch to a different user ID.'),
+              Text(
+                  'This is also a good opportunity to switch to a different user ID.'),
               RaisedButton(
                 child: Text('Change User'),
                 onPressed: () {
@@ -115,6 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       if (library.isPopulated()) {
+        if (user.averageReadingRate == null) {
+          try {
+            user.averageReadingRate = calculateAverageReadingRateInDays(
+                library.shelves['read'].books);
+          } catch (e) {}
+        }
         return MainUI();
       } else if (library.shelves != null && library.shelves.isNotEmpty) {
         return Scaffold(

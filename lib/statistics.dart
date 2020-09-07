@@ -1,9 +1,37 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:goodreads_companion/library.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:provider/provider.dart';
 
 import 'book.dart';
+import 'shelf.dart';
+
+int calculateAverageReadingRateInDays(List<Book> books) {
+  List<Book> booksWithData = books
+      .where((book) =>
+          book.dateStartedReading != null &&
+          book.dateFinishedReading != null &&
+          book.numberOfPages != null)
+      .toList();
+
+  if (booksWithData.isEmpty) {
+    throw Exception('Not enough data to calculate average reading rate');
+  }
+
+  List<double> readingRates = booksWithData
+      .map((book) =>
+          book.numberOfPages /
+          max(
+              book.dateFinishedReading
+                  .difference(book.dateStartedReading)
+                  .inDays,
+              1))
+      .toList();
+
+  return (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
+}
 
 class BooksReadStatistic extends StatelessWidget {
   final List<Book> books;
@@ -12,8 +40,12 @@ class BooksReadStatistic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var numberOfBooksRead =
-        books.where((book) => book.dateFinishedReading != null).length;
+    Shelf readShelf = Provider.of<Library>(context).shelves['read'];
+
+    var numberOfBooksRead = books
+        .where((book) =>
+            book.dateFinishedReading != null || readShelf.books.contains(book))
+        .length;
 
     int percentageOfBooksRead =
         ((numberOfBooksRead / books.length) * 100).floor();
@@ -144,42 +176,22 @@ class AverageReadingRateStatistic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Book> booksWithData = books
-        .where((book) =>
-            book.dateStartedReading != null &&
-            book.dateFinishedReading != null &&
-            book.numberOfPages != null)
-        .toList();
-
-    if (booksWithData.isEmpty) {
+    try {
+      return Container(
+          height: 60,
+          child: Column(
+            children: [
+              Text('Average reading rate'),
+              Text('${calculateAverageReadingRateInDays(books)} pages a day')
+            ],
+          ));
+    } catch (e) {
       return Container(
           height: 60,
           child: Column(
             children: [Text('Average time to read'), Text('No data available')],
           ));
     }
-
-    List<double> readingRates = booksWithData
-        .map((book) =>
-            book.numberOfPages /
-            max(
-                book.dateFinishedReading
-                    .difference(book.dateStartedReading)
-                    .inDays,
-                1))
-        .toList();
-
-    int averageReadingRate =
-        (readingRates.reduce((a, b) => a + b) / readingRates.length).floor();
-
-    return Container(
-        height: 60,
-        child: Column(
-          children: [
-            Text('Average reading rate'),
-            Text('$averageReadingRate pages a day')
-          ],
-        ));
   }
 }
 
@@ -340,10 +352,7 @@ class NumberOfBooksStatistic extends StatelessWidget {
     return Container(
         height: 60,
         child: Column(
-          children: [
-            Text('Number of books in shelf'),
-            Text('${books.length}')
-          ],
+          children: [Text('Number of books in shelf'), Text('${books.length}')],
         ));
   }
 }

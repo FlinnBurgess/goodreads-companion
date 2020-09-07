@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 class User extends ChangeNotifier {
   String _userId;
+  int _averageReadingRate;
 
   User();
 
@@ -65,5 +66,12 @@ class User extends ChangeNotifier {
     _userId = value;
     save();
     notifyListeners();
+  }
+
+  int get averageReadingRate => _averageReadingRate;
+
+  set averageReadingRate(int value) {
+    _averageReadingRate = value;
+    save();
   }
 }

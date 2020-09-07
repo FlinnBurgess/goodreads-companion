@@ -243,6 +243,17 @@ class Book {
   String toString() {
     return 'Book{goodreadsId: $goodreadsId, isbn: $isbn, isbn13: $isbn13, title: $title, imageUrl: $imageUrl, smallImageUrl: $smallImageUrl, goodreadsUrl: $goodreadsUrl, numberOfPages: $numberOfPages, averageRating: $averageRating, numberOfRatings: $numberOfRatings, author: $author, userRating: $userRating, rawDateStartedReading: $rawDateStartedReading, dateStartedReading: $dateStartedReading, rawDateFinishedReading: $rawDateFinishedReading, dateFinishedReading: $dateFinishedReading}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Book &&
+          runtimeType == other.runtimeType &&
+          title == other.title &&
+          author == other.author;
+
+  @override
+  int get hashCode => title.hashCode ^ author.hashCode;
 }
 
 const monthMapping = {

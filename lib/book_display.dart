@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:goodreads_companion/user.dart';
+import 'package:provider/provider.dart';
 
 import 'book.dart';
 
@@ -10,6 +12,11 @@ class BookDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int avgReadingRate = Provider.of<User>(context).averageReadingRate;
+    int daysToRead = avgReadingRate == null || book.numberOfPages == null
+        ? null
+        : (book.numberOfPages / avgReadingRate).ceil();
+
     return Card(
       child: Column(
         children: [
@@ -38,8 +45,12 @@ class BookDisplay extends StatelessWidget {
                       )
                     ],
                   ),
-                  Text('Number of pages: ${book.numberOfPages}'),
-                ],
+                  book.numberOfPages == null ? null : Text('Number of pages: ${book.numberOfPages}'),
+                  daysToRead == null
+                      ? null
+                      : Text(
+                          'Estimated time to read: $daysToRead ${daysToRead > 1 ? 'days' : 'day'}.')
+                ].where((element) => element != null).toList(),
               ))
             ],
           ),
