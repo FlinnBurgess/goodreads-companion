@@ -17,23 +17,26 @@ class BookDisplay extends StatelessWidget {
         ? null
         : (book.numberOfPages / avgReadingRate).ceil();
 
-    return Card(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Image.network(book.imageUrl),
-              Flexible(
-                  child: Column(
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Card(
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    book.title,
-                    textAlign: TextAlign.start,
-                  ),
-                  Text(book.author),
-                  Row(
+                  Image.network(book.imageUrl),
+                  SizedBox(width: 10,),
+                  Flexible(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Avg Rating'),
+                      Text(
+                        book.title,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(book.author, style: TextStyle(fontSize: 13, color: Colors.grey[600]),),
+                      SizedBox(height: 5,),
                       RatingBarIndicator(
                         rating: book.averageRating,
                         itemBuilder: (_, __) => Icon(
@@ -42,20 +45,19 @@ class BookDisplay extends StatelessWidget {
                         ),
                         itemCount: 5,
                         itemSize: 20,
-                      )
-                    ],
-                  ),
-                  book.numberOfPages == null ? null : Text('Number of pages: ${book.numberOfPages}'),
-                  daysToRead == null
-                      ? null
-                      : Text(
-                          'Estimated time to read: $daysToRead ${daysToRead > 1 ? 'days' : 'day'}.')
-                ].where((element) => element != null).toList(),
-              ))
-            ],
-          ),
-        ],
-      ),
-    );
+                      ),
+                      SizedBox(height: 5,),
+                      book.numberOfPages == null
+                          ? null
+                          : Text('Pages: ${book.numberOfPages}'),
+                      daysToRead == null
+                          ? null
+                          : Text(
+                              'Estimated time to read: $daysToRead ${daysToRead > 1 ? 'days' : 'day'}.')
+                    ].where((element) => element != null).toList(),
+                  ))
+                ],
+              )),
+        ));
   }
 }

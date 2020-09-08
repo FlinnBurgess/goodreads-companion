@@ -6,18 +6,18 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:goodreads_companion/book.dart';
 import 'package:goodreads_companion/book_display.dart';
 
-class BookRecommendationsPage extends StatefulWidget {
+class RandomBookPage extends StatefulWidget {
   final List<Book> books;
   final List<Book> booksRead;
 
-  BookRecommendationsPage(this.books, this.booksRead);
+  RandomBookPage(this.books, this.booksRead);
 
   @override
-  _BookRecommendationsPageState createState() =>
-      _BookRecommendationsPageState();
+  _RandomBookPageState createState() =>
+      _RandomBookPageState();
 }
 
-class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
+class _RandomBookPageState extends State<RandomBookPage> {
   Book selectedBook;
   var random = Random();
   int maxPages;
@@ -107,7 +107,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
               textAlign: TextAlign.center,
             )),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
                 width: inputSize,
@@ -129,6 +129,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                       controller: textEditingController,
                       decoration: InputDecoration(labelText: 'Author')),
                 )),
+            SizedBox(width: 25,),
             Container(
                 width: inputSize,
                 child: TextField(
@@ -147,7 +148,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
                 width: inputSize,
@@ -167,6 +168,7 @@ class _BookRecommendationsPageState extends State<BookRecommendationsPage> {
                         },
                       )
                     : Container()),
+            SizedBox(width: 25,),
             Container(
                 width: inputSize,
                 child: TextField(

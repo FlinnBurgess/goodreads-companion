@@ -4,7 +4,7 @@ import 'package:goodreads_companion/statistics.dart';
 import 'package:provider/provider.dart';
 
 import 'library.dart';
-import 'recommendations.dart';
+import 'random_book.dart';
 
 class MainUI extends StatefulWidget {
   @override
@@ -64,7 +64,7 @@ class _MainUIState extends State<MainUI> {
                   FinishReadingDaysStatistic(books: books),
                 ]));
           case RECOMMEND:
-            return BookRecommendationsPage(
+            return RandomBookPage(
                 books, library.shelves['read'].books);
           case SETTINGS:
             return SettingsPage();
@@ -94,7 +94,7 @@ class _MainUIState extends State<MainUI> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.insert_chart), title: Text('Statistics')),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.check), title: Text('Recommendations')),
+                  icon: Icon(Icons.repeat), title: Text('Random Book')),
               BottomNavigationBarItem(
                   icon: Icon(Icons.settings), title: Text('Settings'))
             ],
