@@ -7,6 +7,9 @@ import 'package:path_provider/path_provider.dart';
 
 class Settings extends ChangeNotifier {
   DateTime _lastDownloaded;
+  bool _lowDataMode;
+  bool _includeBooksReadInASingleDayInStats;
+
 
   Settings() {
     _lastDownloaded = DateTime.now();

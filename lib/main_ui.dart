@@ -15,18 +15,26 @@ class MainUI extends StatefulWidget {
 class _MainUIState extends State<MainUI> {
   static const int BOOKS_LIST = 0;
   static const int STATISTICS = 1;
-  static const int RECOMMEND = 2;
+  static const int RANDOM_BOOK = 2;
   static const int SETTINGS = 3;
   int _selectedPage = BOOKS_LIST;
+  
+  var _pageTitles = {
+    BOOKS_LIST: 'All Books',
+    STATISTICS: 'Statistics',
+    RANDOM_BOOK: 'Random Book',
+    SETTINGS: 'Settings'
+  };
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Library>(
       builder: (context, library, _) {
         var tabs = library.shelves.keys
-            .map((shelfName) => Tab(
-                  text: shelfName,
-                ))
+            .map((shelfName) =>
+            Tab(
+              text: shelfName,
+            ))
             .toList();
 
         var tabPages = library.shelves.keys.map((shelfName) {
@@ -35,47 +43,52 @@ class _MainUIState extends State<MainUI> {
             case BOOKS_LIST:
               return ListView.builder(
                   itemCount: books.length,
-                  itemBuilder: (_, index) => GestureDetector(
-                      onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => Center(
+                  itemBuilder: (_, index) =>
+                      GestureDetector(
+                          onTap: () =>
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      Center(
+                                          child: Container(
+                                            height: 250,
+                                            child: BookDisplay(
+                                              book: books[index],
+                                            ),
+                                          ))),
+                          child: Center(
+                              child: Padding(padding: EdgeInsets.only(top: 30),
                                   child: Container(
-                                height: 250,
-                                child: BookDisplay(
-                                  book: books[index],
-                                ),
-                              ))),
-                      child: Center(
-                          child: Padding(padding: EdgeInsets.only(top: 30), child: Container(
-                        child: Text(books[index].title, textAlign: TextAlign.center,),
-                      )))));
+                                    child: Text(books[index].title,
+                                      textAlign: TextAlign.center,),
+                                  )))));
             case STATISTICS:
               return SingleChildScrollView(
                   child: Column(children: [
-                NumberOfBooksStatistic(
-                  books: books,
-                ),
-                BooksReadStatistic(
-                  books: books,
-                ),
-                AverageNumberOfPagesStatistic(
-                  books: books,
-                ),
-                TotalPagesReadStatistic(
-                  books: books,
-                ),
-                AverageTimeToReadStatistic(
-                  books: books,
-                ),
-                AverageReadingRateStatistic(
-                  books: books,
-                ),
-                StartedReadingDaysStatistic(
-                  books: books,
-                ),
-                FinishReadingDaysStatistic(books: books),
-              ]));
-            case RECOMMEND:
+                    NumberOfBooksStatistic(
+                      books: books,
+                    ),
+                    BooksReadStatistic(
+                      books: books,
+                    ),
+                    AverageNumberOfPagesStatistic(
+                      books: books,
+                    ),
+                    TotalPagesReadStatistic(
+                      books: books,
+                    ),
+                    AverageTimeToReadStatistic(
+                      books: books,
+                    ),
+                    AverageReadingRateStatistic(
+                      books: books,
+                    ),
+                    StartedReadingDaysStatistic(
+                      books: books,
+                    ),
+                    FinishReadingDaysStatistic(books: books),
+                  ]));
+            case RANDOM_BOOK:
               return RandomBookPage(books, library.shelves['read'].books);
             case SETTINGS:
               return SettingsPage();
@@ -88,8 +101,8 @@ class _MainUIState extends State<MainUI> {
           length: tabs.length,
           child: Scaffold(
             appBar: AppBar(
-              title: Text('Goodreads Companion'),
-              bottom: TabBar(isScrollable: true, tabs: tabs),
+              title: Text(_pageTitles[_selectedPage]),
+              bottom: _selectedPage == SETTINGS ? null : TabBar(isScrollable: true, tabs: tabs),
             ),
             body: TabBarView(
               children: tabPages,
