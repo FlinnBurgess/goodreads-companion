@@ -7,9 +7,14 @@ import 'package:path_provider/path_provider.dart';
 
 class Settings extends ChangeNotifier {
   DateTime _lastDownloaded;
-  bool _lowDataMode;
-  bool _includeBooksReadInASingleDayInStats;
-
+  bool _lowDataMode = false;
+  bool _excludeBooksReadInASingleDayFromStats = false;
+  bool _userHasSelectedACountry = false;
+  String _selectedCountry = 'US';
+  bool _showAmazonLink = true;
+  bool _showAudibleLink = true;
+  bool _showGoogleBooksLink = true;
+  bool _showBookDepositoryLink = true;
 
   Settings() {
     _lastDownloaded = DateTime.now();
@@ -25,7 +30,12 @@ class Settings extends ChangeNotifier {
   }
 
   Map<String, dynamic> toJson() {
-    return {'lastDownloaded': _lastDownloaded.toString()};
+    return {
+      'lastDownloaded': _lastDownloaded.toString(),
+      'selectedCountry': _selectedCountry,
+      'userHasSelectedCountry': _userHasSelectedACountry,
+      'excludeBooksReadInASingleDayFromStats': _excludeBooksReadInASingleDayFromStats
+    };
   }
 
   static Future<Settings> load() async {
@@ -43,6 +53,9 @@ class Settings extends ChangeNotifier {
   Settings.fromJson(String json) {
     Map<String, dynamic> decoded = jsonDecode(json);
     _lastDownloaded = DateTime.parse(decoded['lastDownloaded']);
+    _selectedCountry = decoded['selectedCountry'];
+    _userHasSelectedACountry = decoded['userHasSelectedCountry'];
+    _excludeBooksReadInASingleDayFromStats = decoded['excludeBooksReadInASingleDayFromStats'];
   }
 
   static Future<File> get _localFile async {
@@ -61,6 +74,24 @@ class Settings extends ChangeNotifier {
 
   set lastDownloaded(DateTime value) {
     _lastDownloaded = value;
+    save();
+  }
+
+  String get selectedCountry => _selectedCountry;
+
+  set selectedCountry(String value) {
+    _userHasSelectedACountry = true;
+    _selectedCountry = value;
+    notifyListeners();
+    save();
+  }
+
+  bool get excludeBooksReadInASingleDayFromStats =>
+      _excludeBooksReadInASingleDayFromStats;
+
+  set excludeBooksReadInASingleDayFromStats(bool value) {
+    _excludeBooksReadInASingleDayFromStats = value;
+    notifyListeners();
     save();
   }
 }

@@ -120,7 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
         if (user.averageReadingRate == null) {
           try {
             user.averageReadingRate = calculateAverageReadingRateInDays(
-                library.shelves['read'].books);
+                library.shelves['read'].books,
+                settings.excludeBooksReadInASingleDayFromStats);
           } catch (e) {}
         }
         return MainUI();

@@ -6,15 +6,27 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 
 import 'book.dart';
+import 'settings.dart';
 import 'shelf.dart';
 
-int calculateAverageReadingRateInDays(List<Book> books) {
+int calculateAverageReadingRateInDays(
+    List<Book> books, bool excludeBooksReadInASingleDay) {
   List<Book> booksWithData = books
       .where((book) =>
           book.dateStartedReading != null &&
           book.dateFinishedReading != null &&
           book.numberOfPages != null)
       .toList();
+
+  if (excludeBooksReadInASingleDay) {
+    booksWithData = booksWithData
+        .where((book) =>
+            book.dateFinishedReading
+                .difference(book.dateStartedReading)
+                .inDays >
+            1)
+        .toList();
+  }
 
   if (booksWithData.isEmpty) {
     throw Exception('Not enough data to calculate average reading rate');
@@ -182,7 +194,8 @@ class AverageReadingRateStatistic extends StatelessWidget {
           child: Column(
             children: [
               Text('Average reading rate'),
-              Text('${calculateAverageReadingRateInDays(books)} pages a day')
+              Text(
+                  '${calculateAverageReadingRateInDays(books, Provider.of<Settings>(context).excludeBooksReadInASingleDayFromStats)} pages a day')
             ],
           ));
     } catch (e) {

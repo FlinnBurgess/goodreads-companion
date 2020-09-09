@@ -1,5 +1,7 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:goodreads_companion/library.dart';
+import 'package:goodreads_companion/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'user.dart';
@@ -12,8 +14,8 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<User, Library>(
-      builder: (context, user, library, _) {
+    return Consumer3<User, Library, Settings>(
+      builder: (context, user, library, settings, _) {
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -22,8 +24,33 @@ class _SettingsPageState extends State<SettingsPage> {
                   Text('Current user: ${user.userId}'),
                   RaisedButton(
                     child: Text('Change user'),
-                    onPressed: () => _confirmUserIdChange(context, user, library),
+                    onPressed: () =>
+                        _confirmUserIdChange(context, user, library),
                   )
+                ],
+              ),
+              Row(
+                children: [
+                  Text('Select your country: '),
+                  CountryCodePicker(
+                    onChanged: (selected) =>
+                        settings.selectedCountry = selected.code,
+                    initialSelection: settings.selectedCountry,
+                    favorite: ['GB', 'US'],
+                    showCountryOnly: true,
+                    showOnlyCountryWhenClosed: true,
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                    value: settings.excludeBooksReadInASingleDayFromStats,
+                    onChanged: (value) =>
+                        settings.excludeBooksReadInASingleDayFromStats = value,
+                  ),
+                  Text(
+                      'Exclude books read in a single day from your statistics? This setting provides more accurate statistics if you know you have misentered reading dates.'),
                 ],
               )
             ],
