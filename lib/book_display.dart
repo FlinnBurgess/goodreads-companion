@@ -24,7 +24,7 @@ class BookDisplay extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Card(
               child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -49,7 +49,7 @@ class BookDisplay extends StatelessWidget {
                                       fontSize: 13, color: Colors.grey[600]),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 RatingBarIndicator(
                                   rating: book.averageRating,
@@ -61,11 +61,12 @@ class BookDisplay extends StatelessWidget {
                                   itemSize: 20,
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
                                 book.numberOfPages == null
                                     ? null
-                                    : Text('Pages: ${book.numberOfPages}'),
+                                    : Text('${book.numberOfPages} pages'),
+                                SizedBox(height: 5,),
                                 daysToRead == null
                                     ? null
                                     : Text(
