@@ -63,11 +63,21 @@ class BooksReadStatistic extends StatelessWidget {
         ((numberOfBooksRead / books.length) * 100).floor();
 
     return Container(
-      height: 60,
-      child: Column(children: [
-        Text('Books Read'),
-        Text('$numberOfBooksRead ($percentageOfBooksRead%)')
-      ]),
+      child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Column(children: [
+            Text(
+              'Books Read',
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '$numberOfBooksRead ($percentageOfBooksRead%)',
+              style: TextStyle(fontSize: 25),
+            )
+          ])),
     );
   }
 }
@@ -89,8 +99,14 @@ class AverageNumberOfPagesStatistic extends StatelessWidget {
           height: 60,
           child: Column(
             children: [
-              Text('Average number of pages'),
-              Text('No data available')
+              Text(
+                'Average number of pages',
+                style: TextStyle(fontSize: 15),
+              ),
+              Text(
+                'No data available',
+                style: TextStyle(fontSize: 25),
+              )
             ],
           ));
     }
@@ -99,11 +115,24 @@ class AverageNumberOfPagesStatistic extends StatelessWidget {
         (numberOfPagesData.reduce((a, b) => a + b) / numberOfPagesData.length)
             .floor();
 
-    return Container(
-        height: 60,
-        child: Column(
-          children: [Text('Average number of pages'), Text('$averagePages')],
-        ));
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+            child: Column(
+          children: [
+            Text(
+              'Average number of pages',
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '$averagePages',
+              style: TextStyle(fontSize: 25),
+            )
+          ],
+        )));
   }
 }
 
@@ -120,21 +149,44 @@ class TotalPagesReadStatistic extends StatelessWidget {
         .toList();
 
     if (booksRead.isEmpty) {
-      return Container(
-          height: 60,
-          child: Column(
-            children: [Text('Total pages read'), Text('No data available')],
-          ));
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
+            children: [
+              Text(
+                'Total pages read',
+                style: TextStyle(fontSize: 15),
+              ),
+              Text(
+                'No data available',
+                style: TextStyle(fontSize: 25),
+              )
+            ],
+          )));
     }
 
     int totalPages =
         booksRead.map((book) => book.numberOfPages).reduce((a, b) => a + b);
 
-    return Container(
-        height: 60,
-        child: Column(
-          children: [Text('Total number of pages read'), Text('$totalPages')],
-        ));
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+            child: Column(
+          children: [
+            Text(
+              'Total number of pages read',
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '$totalPages',
+              style: TextStyle(fontSize: 25),
+            )
+          ],
+        )));
   }
 }
 
@@ -152,13 +204,21 @@ class AverageTimeToReadStatistic extends StatelessWidget {
 
     if (booksRead.isEmpty) {
       return Container(
-          height: 60,
           child: Column(
-            children: [
-              Text('Average time to read'),
-              Text('You haven\'t finished any of the books in this shelf!')
-            ],
-          ));
+        children: [
+          Text(
+            'Average number of days taken to read',
+            style: TextStyle(fontSize: 15),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            'You haven\'t finished any of the books in this shelf!',
+            style: TextStyle(fontSize: 25),
+          )
+        ],
+      ));
     }
 
     List<int> daysTakenToRead = booksRead
@@ -170,14 +230,24 @@ class AverageTimeToReadStatistic extends StatelessWidget {
         (daysTakenToRead.reduce((a, b) => a + b) / daysTakenToRead.length)
             .floor();
 
-    return Container(
-        height: 60,
-        child: Column(
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+            child: Column(
           children: [
-            Text('Average number of days taken to read'),
-            Text('$averageDaysToRead')
+            Text(
+              'Average number of days taken to read',
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '$averageDaysToRead',
+              style: TextStyle(fontSize: 25),
+            )
           ],
-        ));
+        )));
   }
 }
 
@@ -189,21 +259,43 @@ class AverageReadingRateStatistic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      return Container(
-          height: 60,
-          child: Column(
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
             children: [
-              Text('Average reading rate'),
               Text(
-                  '${calculateAverageReadingRateInDays(books, Provider.of<Settings>(context).excludeBooksReadInASingleDayFromStats)} pages a day')
+                'Average reading rate',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                '${calculateAverageReadingRateInDays(books, Provider.of<Settings>(context).excludeBooksReadInASingleDayFromStats)} pages a day',
+                style: TextStyle(fontSize: 25),
+              )
             ],
-          ));
+          )));
     } catch (e) {
-      return Container(
-          height: 60,
-          child: Column(
-            children: [Text('Average time to read'), Text('No data available')],
-          ));
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
+            children: [
+              Text(
+                'Average time to read',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'No data available',
+                style: TextStyle(fontSize: 25),
+              )
+            ],
+          )));
     }
   }
 }
@@ -232,14 +324,24 @@ class StartedReadingDaysStatistic extends StatelessWidget {
         .toList();
 
     if (booksWithStartedReadingData.isEmpty) {
-      return Container(
-          height: 60,
-          child: Column(
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
             children: [
-              Text('Most popular days to start reading'),
-              Text('No data available')
+              Text(
+                'Most popular days to start reading',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'No data available',
+                style: TextStyle(fontSize: 25),
+              )
             ],
-          ));
+          )));
     }
 
     booksWithStartedReadingData.forEach((book) {
@@ -269,15 +371,22 @@ class StartedReadingDaysStatistic extends StatelessWidget {
     });
 
     return Container(
-        height: 250,
-        child: Column(
-          children: [
-            Text('Most popular days to start reading'),
-            PieChart(
-              dataMap: startedReadingCount,
-            )
-          ],
-        ));
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                Text(
+                  'Most popular days to start reading',
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PieChart(
+                  dataMap: startedReadingCount,
+                )
+              ],
+            )));
   }
 }
 
@@ -295,14 +404,18 @@ class FinishReadingDaysStatistic extends StatelessWidget {
         .toList();
 
     if (booksWithFinishedReadingData.isEmpty) {
-      return Container(
-          height: 60,
-          child: Column(
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
             children: [
               Text('Most popular days to finish reading'),
+              SizedBox(
+                height: 10,
+              ),
               Text('No data available')
             ],
-          ));
+          )));
     }
 
     Map<String, double> finishedReadingCount = {
@@ -341,17 +454,21 @@ class FinishReadingDaysStatistic extends StatelessWidget {
       chartData[day] = () => finishedReadingCount[day];
     });
 
-    return Container(
-        height: 250,
-        child: Column(
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+            child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Most popular days to finish reading'),
+            SizedBox(
+              height: 10,
+            ),
             PieChart(
               dataMap: finishedReadingCount,
             )
           ],
-        ));
+        )));
   }
 }
 
@@ -362,10 +479,23 @@ class NumberOfBooksStatistic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 60,
-        child: Column(
-          children: [Text('Number of books in shelf'), Text('${books.length}')],
-        ));
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+            child: Column(
+          children: [
+            Text(
+              'Number of books in shelf',
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '${books.length}',
+              style: TextStyle(fontSize: 25),
+            )
+          ],
+        )));
   }
 }

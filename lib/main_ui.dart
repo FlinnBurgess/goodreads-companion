@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goodreads_companion/book_display.dart';
 import 'package:goodreads_companion/settings_page.dart';
 import 'package:goodreads_companion/statistics.dart';
+import 'package:goodreads_companion/statistics_page.dart';
 import 'package:provider/provider.dart';
 
 import 'library.dart';
@@ -82,31 +83,7 @@ class _MainUIState extends State<MainUI> {
                                 ),
                               )))));
             case STATISTICS:
-              return SingleChildScrollView(
-                  child: Column(children: [
-                NumberOfBooksStatistic(
-                  books: books,
-                ),
-                BooksReadStatistic(
-                  books: books,
-                ),
-                AverageNumberOfPagesStatistic(
-                  books: books,
-                ),
-                TotalPagesReadStatistic(
-                  books: books,
-                ),
-                AverageTimeToReadStatistic(
-                  books: books,
-                ),
-                AverageReadingRateStatistic(
-                  books: books,
-                ),
-                StartedReadingDaysStatistic(
-                  books: books,
-                ),
-                FinishReadingDaysStatistic(books: books),
-              ]));
+              return StatisticsPage(books: books,);
             case RANDOM_BOOK:
               return RandomBookPage(books, library.shelves['read'].books);
             case SETTINGS:
