@@ -74,6 +74,19 @@ class BookDisplay extends StatelessWidget {
                             ))
                           ],
                         ),
+                        settings.showBookDepositoryLink ||
+                                settings.showGoogleBooksLink ||
+                                settings.showAudibleLink ||
+                                settings.showAmazonLink
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  'Buy this book:',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                            : null,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -108,7 +121,7 @@ class BookDisplay extends StatelessWidget {
                                 : null,
                           ].where((element) => element != null).toList(),
                         )
-                      ])),
+                      ].where((element) => element != null).toList())),
             ));
       },
     );

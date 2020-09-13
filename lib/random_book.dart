@@ -13,8 +13,7 @@ class RandomBookPage extends StatefulWidget {
   RandomBookPage(this.books, this.booksRead);
 
   @override
-  _RandomBookPageState createState() =>
-      _RandomBookPageState();
+  _RandomBookPageState createState() => _RandomBookPageState();
 }
 
 class _RandomBookPageState extends State<RandomBookPage> {
@@ -87,17 +86,10 @@ class _RandomBookPageState extends State<RandomBookPage> {
     authors = authors.toSet().toList();
     authors.sort((a, b) => a.compareTo(b));
 
-    return SingleChildScrollView(
-        child: Column(
+    return Center(
+        child: SingleChildScrollView(
+            child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Column(
       children: [
-        Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: 5,
-                horizontal: MediaQuery.of(context).size.width * 0.1),
-            child: Text(
-              'Get a random book from your shelf matching the criteria below.',
-              textAlign: TextAlign.center,
-            )),
         Padding(
             padding: EdgeInsets.symmetric(
                 vertical: 5,
@@ -129,7 +121,9 @@ class _RandomBookPageState extends State<RandomBookPage> {
                       controller: textEditingController,
                       decoration: InputDecoration(labelText: 'Author')),
                 )),
-            SizedBox(width: 25,),
+            SizedBox(
+              width: 25,
+            ),
             Container(
                 width: inputSize,
                 child: TextField(
@@ -168,7 +162,9 @@ class _RandomBookPageState extends State<RandomBookPage> {
                         },
                       )
                     : Container()),
-            SizedBox(width: 25,),
+            SizedBox(
+              width: 25,
+            ),
             Container(
                 width: inputSize,
                 child: TextField(
@@ -187,8 +183,14 @@ class _RandomBookPageState extends State<RandomBookPage> {
                 ))
           ],
         ),
-        FlatButton(
+        SizedBox(
+          height: 20,
+        ),
+        RaisedButton(
           child: Text('Random book'),
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50))),
           onPressed: () {
             List<Book> booksToSearch = List.from(widget.books);
             if (maxPages != null) {
@@ -224,8 +226,10 @@ class _RandomBookPageState extends State<RandomBookPage> {
         ),
         selectedBook == null
             ? Text('No matches found')
-            : BookDisplay(book: selectedBook,)
+            : BookDisplay(
+                book: selectedBook,
+              )
       ],
-    ));
+    ))));
   }
 }
