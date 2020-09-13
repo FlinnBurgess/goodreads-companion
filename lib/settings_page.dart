@@ -52,7 +52,36 @@ class _SettingsPageState extends State<SettingsPage> {
                   Text(
                       'Exclude books read in a single day from your statistics? This setting provides more accurate statistics if you know you have misentered reading dates.'),
                 ],
-              )
+              ),
+              Text('Store buttons to show'),
+              Row(
+                children: [
+                  Checkbox(
+                    value: settings.showAmazonLink,
+                    onChanged: (value) => settings.showAmazonLink = value,
+                  ),
+                  Text('Amazon'),
+                  Checkbox(
+                    value: settings.showAudibleLink,
+                    onChanged: (value) => settings.showAudibleLink = value,
+                  ),
+                  Text('Audible'),
+                ],
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                    value: settings.showGoogleBooksLink,
+                    onChanged: (value) => settings.showGoogleBooksLink = value,
+                  ),
+                  Text('Google Books'),
+                  Checkbox(
+                    value: settings.showBookDepositoryLink,
+                    onChanged: (value) => settings.showBookDepositoryLink = value,
+                  ),
+                  Text('Book Depository'),
+                ],
+              ),
             ],
           ),
         );

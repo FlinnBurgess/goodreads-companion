@@ -50,10 +50,9 @@ class _MainUIState extends State<MainUI> {
     return Consumer<Library>(
       builder: (context, library, _) {
         var tabs = library.shelves.keys
-            .map((shelfName) =>
-            Tab(
-              text: shelfName,
-            ))
+            .map((shelfName) => Tab(
+                  text: shelfName,
+                ))
             .toList();
 
         var tabPages = library.shelves.keys.map((shelfName) {
@@ -62,51 +61,52 @@ class _MainUIState extends State<MainUI> {
             case BOOKS_LIST:
               return ListView.builder(
                   itemCount: books.length,
-                  itemBuilder: (_, index) =>
-                      GestureDetector(
-                          onTap: () =>
-                              showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      Center(
-                                          child: Container(
-                                            height: 250,
-                                            child: BookDisplay(
-                                              book: books[index],
-                                            ),
-                                          ))),
-                          child: Center(
-                              child: Padding(padding: EdgeInsets.only(top: 30),
-                                  child: Container(
-                                    child: Text(books[index].title,
-                                      textAlign: TextAlign.center,),
-                                  )))));
+                  itemBuilder: (_, index) => GestureDetector(
+                      onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => Center(
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                    BookDisplay(
+                                      book: books[index],
+                                    )
+                                  ]))),
+                      child: Center(
+                          child: Padding(
+                              padding: EdgeInsets.only(top: 30),
+                              child: Container(
+                                child: Text(
+                                  books[index].title,
+                                  textAlign: TextAlign.center,
+                                ),
+                              )))));
             case STATISTICS:
               return SingleChildScrollView(
                   child: Column(children: [
-                    NumberOfBooksStatistic(
-                      books: books,
-                    ),
-                    BooksReadStatistic(
-                      books: books,
-                    ),
-                    AverageNumberOfPagesStatistic(
-                      books: books,
-                    ),
-                    TotalPagesReadStatistic(
-                      books: books,
-                    ),
-                    AverageTimeToReadStatistic(
-                      books: books,
-                    ),
-                    AverageReadingRateStatistic(
-                      books: books,
-                    ),
-                    StartedReadingDaysStatistic(
-                      books: books,
-                    ),
-                    FinishReadingDaysStatistic(books: books),
-                  ]));
+                NumberOfBooksStatistic(
+                  books: books,
+                ),
+                BooksReadStatistic(
+                  books: books,
+                ),
+                AverageNumberOfPagesStatistic(
+                  books: books,
+                ),
+                TotalPagesReadStatistic(
+                  books: books,
+                ),
+                AverageTimeToReadStatistic(
+                  books: books,
+                ),
+                AverageReadingRateStatistic(
+                  books: books,
+                ),
+                StartedReadingDaysStatistic(
+                  books: books,
+                ),
+                FinishReadingDaysStatistic(books: books),
+              ]));
             case RANDOM_BOOK:
               return RandomBookPage(books, library.shelves['read'].books);
             case SETTINGS:
@@ -131,8 +131,7 @@ class _MainUIState extends State<MainUI> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(_pageTitles[_selectedPage]),
-              bottom: TabBar(
-                  isScrollable: true, tabs: tabs),
+              bottom: TabBar(isScrollable: true, tabs: tabs),
             ),
             body: TabBarView(
               children: tabPages,

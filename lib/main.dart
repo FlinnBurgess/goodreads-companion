@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goodreads_companion/authentication.dart';
 import 'package:goodreads_companion/authentication_page.dart';
+import 'package:goodreads_companion/data_refresh_prompt.dart';
 import 'package:goodreads_companion/main_ui.dart';
 import 'package:goodreads_companion/settings.dart';
 import 'package:goodreads_companion/shelf.dart';
@@ -72,36 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Consumer4<Library, User, Authentication, Settings>(
         builder: (context, library, user, authentication, settings, _) {
       if (DateTime.now().difference(settings.lastDownloaded).inDays >= 1) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Goodreads Companion'),
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  'Due to Goodreads policy, the app is not able to store data for more than 24 hours.'),
-              Text('To continue using the app, please refresh your book data.'),
-              RaisedButton(
-                child: Text('Refresh Data'),
-                onPressed: () {
-                  settings.lastDownloaded = DateTime.now();
-                  library.reset();
-                },
-              ),
-              Text(
-                  'This is also a good opportunity to switch to a different user ID.'),
-              RaisedButton(
-                child: Text('Change User'),
-                onPressed: () {
-                  settings.lastDownloaded = DateTime.now();
-                  user.reset();
-                  library.reset();
-                },
-              )
-            ],
-          ),
-        );
+        return DataRefreshPrompt();
       }
 
       if (user.userId == null) {

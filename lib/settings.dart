@@ -34,7 +34,12 @@ class Settings extends ChangeNotifier {
       'lastDownloaded': _lastDownloaded.toString(),
       'selectedCountry': _selectedCountry,
       'userHasSelectedCountry': _userHasSelectedACountry,
-      'excludeBooksReadInASingleDayFromStats': _excludeBooksReadInASingleDayFromStats
+      'excludeBooksReadInASingleDayFromStats':
+          _excludeBooksReadInASingleDayFromStats,
+      'showAmazonLink': _showAmazonLink,
+      'showAudibleLink': _showAudibleLink,
+      'showGoogleBooksLink': _showGoogleBooksLink,
+      'showBookDepositoryLink': _showBookDepositoryLink
     };
   }
 
@@ -55,7 +60,12 @@ class Settings extends ChangeNotifier {
     _lastDownloaded = DateTime.parse(decoded['lastDownloaded']);
     _selectedCountry = decoded['selectedCountry'];
     _userHasSelectedACountry = decoded['userHasSelectedCountry'];
-    _excludeBooksReadInASingleDayFromStats = decoded['excludeBooksReadInASingleDayFromStats'];
+    _excludeBooksReadInASingleDayFromStats =
+        decoded['excludeBooksReadInASingleDayFromStats'];
+    _showAmazonLink = decoded['showAmazonLink'];
+    _showAudibleLink = decoded['showAudibleLink'];
+    _showGoogleBooksLink = decoded['showGoogleBooksLink'];
+    _showBookDepositoryLink = decoded['showBookDepositoryLink'];
   }
 
   static Future<File> get _localFile async {
@@ -91,6 +101,38 @@ class Settings extends ChangeNotifier {
 
   set excludeBooksReadInASingleDayFromStats(bool value) {
     _excludeBooksReadInASingleDayFromStats = value;
+    notifyListeners();
+    save();
+  }
+
+  bool get showBookDepositoryLink => _showBookDepositoryLink;
+
+  set showBookDepositoryLink(bool value) {
+    _showBookDepositoryLink = value;
+    notifyListeners();
+    save();
+  }
+
+  bool get showGoogleBooksLink => _showGoogleBooksLink;
+
+  set showGoogleBooksLink(bool value) {
+    _showGoogleBooksLink = value;
+    notifyListeners();
+    save();
+  }
+
+  bool get showAudibleLink => _showAudibleLink;
+
+  set showAudibleLink(bool value) {
+    _showAudibleLink = value;
+    notifyListeners();
+    save();
+  }
+
+  bool get showAmazonLink => _showAmazonLink;
+
+  set showAmazonLink(bool value) {
+    _showAmazonLink = value;
     notifyListeners();
     save();
   }
