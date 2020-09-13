@@ -24,7 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Current User'),
+                  Text('Current User', style: TextStyle(fontSize: 20),),
+                  SizedBox(height: 10,),
                   Row(
                     children: [
                       Text('${user.userId}'),
@@ -42,8 +43,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       )
                     ],
                   ),
-                  Divider(),
-                  Text('Country'),
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider()),
+                  Text('Country', style: TextStyle(fontSize: 20),),
+                  SizedBox(height: 10,),
                   CountryCodePicker(
                     onChanged: (selected) =>
                         settings.selectedCountry = selected.code,
@@ -52,8 +56,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     showCountryOnly: true,
                     showOnlyCountryWhenClosed: true,
                   ),
-                  Divider(),
-                  Text('Store buttons to show'),
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider()),
+                  Text('Store buttons to show', style: TextStyle(fontSize: 20),),
+                  SizedBox(height: 10,),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
@@ -116,7 +123,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       )),
                     ],
                   ),
-                  Divider(),
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider()),
+                  Text('Other Settings', style: TextStyle(fontSize: 20),),
+                  SizedBox(height: 20,),
                   Row(
                     children: [
                       Checkbox(
@@ -126,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       Flexible(
                           child: Text(
-                        'Exclude books read in a single day from your statistics?\n(Prevents skew from misentered reading dates)',
+                        'Exclude books read in a single day from your statistics?\n(Prevents skew from misentered dates)',
                         textAlign: TextAlign.center,
                       )),
                     ],
@@ -148,6 +159,8 @@ class _SettingsPageState extends State<SettingsPage> {
               actions: [
                 RaisedButton(
                   color: Colors.red,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(50))),
                   child: Text('Cancel'),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
@@ -158,6 +171,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     user.reset();
                     library.reset();
                   },
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(50))),
                 ),
               ],
             ));
