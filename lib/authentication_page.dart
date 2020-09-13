@@ -20,35 +20,51 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             title: Text('Goodreads Companion'),
           ),
           body: Center(
-            child: Column(
-              children: [
-                Text('In order to access your books'),
-                RaisedButton(
-                  onPressed: () {
-                    _authenticateUser(authentication);
-                  },
-                  child: Text('Log in to Goodreads'),
-                ),
-                RaisedButton(
-                  onPressed: () {
-                    var authenticationErrorResponse = () => setState(() {
-                          authenticationErrorMessage =
-                              'Something went wrong! Make sure that you entered your username and password while logging in; opening the app isn\'t enough on its own.\nAlternatively, you can make your goodreads account public in the settings in order to skip this step.';
-                        });
+            child: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.1),
+                    child: Column(
+                      children: [
+                        Text(
+                          'The account of the ID you entered is set to private, please log in to your Goodreads account to continue.',
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10,),
+                        RaisedButton(
+                          onPressed: () {
+                            _authenticateUser(authentication);
+                          },
+                          child: Text('Log in to Goodreads'),
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                        ),
+                        SizedBox(height: 20,),
+                        RaisedButton(
+                          onPressed: () {
+                            var authenticationErrorResponse =
+                                () => setState(() {
+                                      authenticationErrorMessage =
+                                          'Something went wrong! Make sure that you entered your username and password while logging in; opening the app isn\'t enough on its own.\nAlternatively, you can make your goodreads account public in the settings in order to skip this step.';
+                                    });
 
-                    _getAccessToken(
-                        authentication, authenticationErrorResponse);
-                  },
-                  child: Text('Done'),
-                ),
-                authenticationErrorMessage == null
-                    ? Container()
-                    : Text(
-                        authenticationErrorMessage,
-                        style: TextStyle(color: Colors.red),
-                      )
-              ],
-            ),
+                            _getAccessToken(
+                                authentication, authenticationErrorResponse);
+                          },
+                          child: Text('Done'),
+                          color: Colors.greenAccent,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                        ),
+                        authenticationErrorMessage == null ? null : SizedBox(height: 20,),
+                        authenticationErrorMessage == null
+                            ? null
+                            : Text(
+                                authenticationErrorMessage,
+                                style: TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              )
+                      ].where((element) => element != null).toList(),
+                    ))),
           ),
         );
       },
