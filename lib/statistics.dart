@@ -203,22 +203,24 @@ class AverageTimeToReadStatistic extends StatelessWidget {
         .toList();
 
     if (booksRead.isEmpty) {
-      return Container(
-          child: Column(
-        children: [
-          Text(
-            'Average number of days taken to read',
-            style: TextStyle(fontSize: 15),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            'You haven\'t finished any of the books in this shelf!',
-            style: TextStyle(fontSize: 25),
-          )
-        ],
-      ));
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Container(
+              child: Column(
+            children: [
+              Text(
+                'Average number of days taken to read',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'No data available',
+                style: TextStyle(fontSize: 25),
+              )
+            ],
+          )));
     }
 
     List<int> daysTakenToRead = booksRead
@@ -413,7 +415,7 @@ class FinishReadingDaysStatistic extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text('No data available')
+              Text('No data available', style: TextStyle(fontSize: 25),)
             ],
           )));
     }
