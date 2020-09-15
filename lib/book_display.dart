@@ -51,22 +51,43 @@ class BookDisplay extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                RatingBarIndicator(
-                                  rating: book.averageRating,
-                                  itemBuilder: (_, __) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                                  RatingBarIndicator(
+                                    rating: book.averageRating,
+                                    itemBuilder: (_, __) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    itemCount: 5,
+                                    itemSize: 20,
                                   ),
-                                  itemCount: 5,
-                                  itemSize: 20,
-                                ),
+                                  Text('(${book.numberOfRatings})', style: TextStyle(color: Colors.grey),)
+                                ]),
                                 SizedBox(
                                   height: 10,
                                 ),
+                                book.userRating == null
+                                    ? null
+                                    : RatingBarIndicator(
+                                        rating: book.userRating.toDouble(),
+                                        itemBuilder: (_, __) => Icon(
+                                          Icons.star,
+                                          color: Colors.purple,
+                                        ),
+                                        itemCount: 5,
+                                        itemSize: 20,
+                                      ),
+                                book.userRating == null
+                                    ? null
+                                    : SizedBox(
+                                        height: 10,
+                                      ),
                                 book.numberOfPages == null
                                     ? null
                                     : Text('${book.numberOfPages} pages'),
-                                SizedBox(height: 5,),
+                                SizedBox(
+                                  height: 5,
+                                ),
                                 daysToRead == null
                                     ? null
                                     : Text(
