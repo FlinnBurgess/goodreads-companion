@@ -234,19 +234,40 @@ class LibraryPopulationProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: shelves.values
-            .map((shelf) => Container(
-                height: 60,
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: Column(children: [
-                  Text(shelf.name),
-                  LinearProgressIndicator(
-                    value: shelf.populationProgress / shelf.size,
-                  )
-                ])))
-            .toList(),
-      ),
+      child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.15,
+              vertical: 20),
+          child: Column(
+            children: <Widget>[
+                  Text(
+                    'Downloading shelf data...',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ] +
+                shelves.values
+                    .map((shelf) => Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child:
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                          Text(shelf.name
+                              .split('-')
+                              .map((word) =>
+                                  word[0].toUpperCase() + word.substring(1))
+                              .join(' ')),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          LinearProgressIndicator(
+                            value: shelf.populationProgress / shelf.size,
+                          )
+                        ])))
+                    .toList(),
+          )),
     );
   }
 }
