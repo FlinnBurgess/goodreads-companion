@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goodreads_companion/book_display.dart';
+import 'package:goodreads_companion/book_list_page.dart';
 import 'package:goodreads_companion/settings_page.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:goodreads_companion/statistics_page.dart';
@@ -60,30 +61,9 @@ class _MainUIState extends State<MainUI> {
           var books = library.shelves[shelfName].books;
           switch (_selectedPage) {
             case BOOKS_LIST:
-              return ListView.builder(
-                  itemCount: books.length,
-                  itemBuilder: (_, index) => GestureDetector(
-                      onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => Center(
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                    BookDisplay(
-                                      book: books[index],
-                                    )
-                                  ]))),
-                      child: Center(
-                          child: Padding(
-                              padding: EdgeInsets.only(top: 30),
-                              child: Container(
-                                child: Text(
-                                  books[index].title,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )))));
+              return BookListPage(books);
             case STATISTICS:
-              return StatisticsPage(books: books,);
+              return StatisticsPage(books,);
             case RANDOM_BOOK:
               return RandomBookPage(books, library.shelves['read'].books);
             case SETTINGS:

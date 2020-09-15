@@ -6,7 +6,7 @@ import 'statistics.dart';
 class StatisticsPage extends StatelessWidget {
   final List<Book> books;
 
-  const StatisticsPage({Key key, this.books}) : super(key: key);
+  const StatisticsPage(this.books, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
