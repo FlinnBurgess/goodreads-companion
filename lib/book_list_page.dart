@@ -60,7 +60,7 @@ class _BookListPageState extends State<BookListPage> {
               child: ListView.builder(
             itemCount: books.length,
             itemBuilder: (_, index) => BookDisplay(
-              book: books[index],
+              books[index],
             ),
           ))),
       Positioned(

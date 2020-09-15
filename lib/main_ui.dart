@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:goodreads_companion/book_display.dart';
 import 'package:goodreads_companion/book_list_page.dart';
 import 'package:goodreads_companion/settings_page.dart';
-import 'package:goodreads_companion/statistics.dart';
 import 'package:goodreads_companion/statistics_page.dart';
 import 'package:provider/provider.dart';
-import 'package:recase/recase.dart';
 
 import 'library.dart';
 import 'random_book.dart';

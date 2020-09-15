@@ -9,7 +9,7 @@ import 'settings.dart';
 class BookDisplay extends StatelessWidget {
   final Book book;
 
-  const BookDisplay({Key key, this.book}) : super(key: key);
+  const BookDisplay(this.book, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
