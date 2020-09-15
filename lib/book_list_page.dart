@@ -83,9 +83,14 @@ class _BookListPageState extends State<BookListPage> {
                     child: Text('Filter'),
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: _isFiltered() ? Colors.amber : Colors.transparent, width: 1.5),
+                        side: BorderSide(
+                            color: _isFiltered()
+                                ? Colors.amber
+                                : Colors.transparent,
+                            width: 1.5),
                         borderRadius: BorderRadius.all(Radius.circular(90))),
                     onPressed: () => showModalBottomSheet(
+                      isScrollControlled: true,
                       context: context,
                       builder: (context) => Padding(
                           padding: EdgeInsets.symmetric(vertical: 25),
@@ -116,7 +121,9 @@ class _BookListPageState extends State<BookListPage> {
                                             child: Text(match)),
                                         onSuggestionSelected: (selected) {
                                           authorController.text = selected;
-                                          selectedAuthor = selected;
+                                          setState(() {
+                                            selectedAuthor = selected;
+                                          });
                                         },
                                         textFieldConfiguration:
                                             TextFieldConfiguration(
@@ -208,21 +215,26 @@ class _BookListPageState extends State<BookListPage> {
                               SizedBox(
                                 height: 25,
                               ),
-                              Center(
-                                child: RaisedButton(
-                                  child: Text('Clear Filters'),
-                                  onPressed: () => setState(() {
-                                    selectedAuthor = null;
-                                    maxPages = null;
-                                    minimumRating = null;
-                                    daysToRead = null;
-                                    avgRatingController.text = '';
-                                    maxPagesController.text = '';
-                                    authorController.text = '';
-                                    daysToReadController.text = '';
-                                  }),
-                                ),
-                              )
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: Center(
+                                    child: RaisedButton(
+                                      child: Text('Clear Filters'),
+                                      onPressed: () => setState(() {
+                                        selectedAuthor = null;
+                                        maxPages = null;
+                                        minimumRating = null;
+                                        daysToRead = null;
+                                        avgRatingController.text = '';
+                                        maxPagesController.text = '';
+                                        authorController.text = '';
+                                        daysToReadController.text = '';
+                                      }),
+                                    ),
+                                  ))
                             ],
                           )),
                     ),
