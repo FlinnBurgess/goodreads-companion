@@ -23,10 +23,12 @@ class _BookListPageState extends State<BookListPage> {
   int maxPages;
   int minimumRating;
   int daysToRead;
+  String titleFilter;
   final TextEditingController authorController = TextEditingController();
   final TextEditingController maxPagesController = TextEditingController();
   final TextEditingController avgRatingController = TextEditingController();
   final TextEditingController daysToReadController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
   BookListSortType sortBy = BookListSortType.title;
   SortDirection sortDirection = SortDirection.ascending;
 
@@ -142,19 +144,14 @@ class _BookListPageState extends State<BookListPage> {
                                   Container(
                                       width: inputSize,
                                       child: TextField(
-                                        controller: maxPagesController,
+                                        controller: titleController,
                                         decoration: new InputDecoration(
-                                            labelText: "Max pages"),
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
+                                            labelText: "Title"),
                                         onChanged: (input) {
                                           if (input == '') {
-                                            setState(() => maxPages = null);
+                                            setState(() => titleFilter = null);
                                           }
-                                          setState(() =>
-                                              maxPages = num.parse(input));
+                                          setState(() => titleFilter = input);
                                         },
                                       )),
                                 ],
@@ -212,6 +209,29 @@ class _BookListPageState extends State<BookListPage> {
                                       ))
                                 ],
                               ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: inputSize,
+                                      child: TextField(
+                                        controller: maxPagesController,
+                                        decoration: new InputDecoration(
+                                            labelText: "Max Pages"),
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        onChanged: (input) {
+                                          if (input == '') {
+                                            setState(() => maxPages = null);
+                                          }
+                                          setState(() =>
+                                              maxPages = num.parse(input));
+                                        },
+                                      ))
+                                ],
+                              ),
                               SizedBox(
                                 height: 25,
                               ),
@@ -228,10 +248,12 @@ class _BookListPageState extends State<BookListPage> {
                                         maxPages = null;
                                         minimumRating = null;
                                         daysToRead = null;
+                                        titleFilter = null;
                                         avgRatingController.text = '';
                                         maxPagesController.text = '';
                                         authorController.text = '';
                                         daysToReadController.text = '';
+                                        titleController.text = '';
                                       }),
                                     ),
                                   ))
@@ -417,6 +439,13 @@ class _BookListPageState extends State<BookListPage> {
           .toList();
     }
 
+    if (titleFilter != null) {
+      books = books
+          .where((book) =>
+              book.title.toLowerCase().contains(titleFilter.toLowerCase()))
+          .toList();
+    }
+
     return books;
   }
 
@@ -491,7 +520,8 @@ class _BookListPageState extends State<BookListPage> {
     return maxPages != null ||
         selectedAuthor != null ||
         daysToRead != null ||
-        minimumRating != null;
+        minimumRating != null ||
+        titleFilter != null;
   }
 }
 
