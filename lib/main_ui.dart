@@ -5,6 +5,7 @@ import 'package:goodreads_companion/settings_page.dart';
 import 'package:goodreads_companion/statistics.dart';
 import 'package:goodreads_companion/statistics_page.dart';
 import 'package:provider/provider.dart';
+import 'package:recase/recase.dart';
 
 import 'library.dart';
 import 'random_book.dart';
@@ -52,9 +53,13 @@ class _MainUIState extends State<MainUI> {
     return Consumer<Library>(
       builder: (context, library, _) {
         var tabs = library.shelves.keys
-            .map((shelfName) => Tab(
-                  text: shelfName,
-                ))
+            .map((shelfName) =>
+            Tab(
+              text: shelfName
+                  .split('-')
+                  .map((word) => word[0].toUpperCase() + word.substring(1))
+                  .join(' '),
+            ))
             .toList();
 
         var tabPages = library.shelves.keys.map((shelfName) {
