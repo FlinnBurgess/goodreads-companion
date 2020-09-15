@@ -32,10 +32,7 @@ class _BookListPageState extends State<BookListPage> {
 
   @override
   Widget build(BuildContext context) {
-    double inputSize = min(MediaQuery
-        .of(context)
-        .size
-        .width * 0.4, 250);
+    double inputSize = min(MediaQuery.of(context).size.width * 0.4, 250);
 
     List<String> authors = [];
 
@@ -47,9 +44,7 @@ class _BookListPageState extends State<BookListPage> {
     authors.sort((a, b) => a.compareTo(b));
 
     var books = _applyFilters(widget.books,
-        Provider
-            .of<User>(context, listen: false)
-            .averageReadingRate);
+        Provider.of<User>(context, listen: false).averageReadingRate);
 
     books = _sortBooks(books);
 
@@ -58,334 +53,327 @@ class _BookListPageState extends State<BookListPage> {
     print('untouched books length: ${widget.books.length}');
     print('de-duplicated books length: ${books.length}');
 
-    return Column(children: [
-      Container(
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              RaisedButton(
-                child: Text('Filter'),
-                color: _isFiltered() ? Colors.amber : Colors.white,
-                onPressed: () =>
-                    showModalBottomSheet(
+    return Stack(children: [
+      Padding(
+          padding: EdgeInsets.only(top: 60),
+          child: Container(
+              child: ListView.builder(
+            itemCount: books.length,
+            itemBuilder: (_, index) => BookDisplay(
+              book: books[index],
+            ),
+          ))),
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    offset: Offset(0, 2),
+                    blurRadius: 5,
+                    spreadRadius: 1)
+              ]),
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RaisedButton(
+                    child: Text('Filter'),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: _isFiltered() ? Colors.amber : Colors.transparent, width: 1.5),
+                        borderRadius: BorderRadius.all(Radius.circular(90))),
+                    onPressed: () => showModalBottomSheet(
                       context: context,
-                      builder: (context) =>
-                          Padding(
-                              padding: EdgeInsets.symmetric(vertical: 25),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceEvenly,
+                      builder: (context) => Padding(
+                          padding: EdgeInsets.symmetric(vertical: 25),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'Filter',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Center(
-                                    child: Text(
-                                      'Filter',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                          width: inputSize,
-                                          child: TypeAheadField(
-                                            suggestionsCallback: (text) =>
-                                                authors
-                                                    .where((author) =>
-                                                    author
-                                                        .toLowerCase()
-                                                        .contains(
-                                                        text.toLowerCase()))
-                                                    .toList(),
-                                            itemBuilder: (_, match) =>
-                                                Container(
-                                                    padding:
-                                                    EdgeInsets.only(
-                                                        top: 5, bottom: 5),
-                                                    child: Text(match)),
-                                            onSuggestionSelected: (selected) {
-                                              authorController.text = selected;
-                                              selectedAuthor = selected;
-                                            },
-                                            textFieldConfiguration:
+                                  Container(
+                                      width: inputSize,
+                                      child: TypeAheadField(
+                                        suggestionsCallback: (text) => authors
+                                            .where((author) => author
+                                                .toLowerCase()
+                                                .contains(text.toLowerCase()))
+                                            .toList(),
+                                        itemBuilder: (_, match) => Container(
+                                            padding: EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            child: Text(match)),
+                                        onSuggestionSelected: (selected) {
+                                          authorController.text = selected;
+                                          selectedAuthor = selected;
+                                        },
+                                        textFieldConfiguration:
                                             TextFieldConfiguration(
-                                                onChanged: (text) =>
-                                                    setState(() =>
-                                                    selectedAuthor =
-                                                    (text == '' ? null : text)),
+                                                onChanged: (text) => setState(
+                                                    () => selectedAuthor =
+                                                        (text == ''
+                                                            ? null
+                                                            : text)),
                                                 controller: authorController,
                                                 decoration: InputDecoration(
                                                     labelText: 'Author')),
-                                          )),
-                                      SizedBox(
-                                        width: 25,
-                                      ),
-                                      Container(
-                                          width: inputSize,
-                                          child: TextField(
-                                            controller: maxPagesController,
-                                            decoration: new InputDecoration(
-                                                labelText: "Max pages"),
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: <
-                                                TextInputFormatter>[
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
-                                            ],
-                                            onChanged: (input) {
-                                              if (input == '') {
-                                                setState(() => maxPages = null);
-                                              }
-                                              setState(
-                                                      () =>
-                                                  maxPages = num.parse(input));
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                          width: inputSize,
-                                          child: Provider
-                                              .of<User>(context)
-                                              .averageReadingRate !=
-                                              null
-                                              ? TextField(
-                                            controller: daysToReadController,
-                                            decoration: new InputDecoration(
-                                                labelText: "Days to read"),
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: <
-                                                TextInputFormatter>[
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
-                                            ],
-                                            onChanged: (input) {
-                                              if (input == '') {
-                                                setState(() =>
-                                                daysToRead = null);
-                                              }
-                                              setState(() =>
-                                              daysToRead = num.parse(input));
-                                            },
-                                          )
-                                              : Container()),
-                                      SizedBox(
-                                        width: 25,
-                                      ),
-                                      Container(
-                                          width: inputSize,
-                                          child: TextField(
-                                            controller: avgRatingController,
-                                            decoration: new InputDecoration(
-                                                labelText: "Average rating"),
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: <
-                                                TextInputFormatter>[
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
-                                            ],
-                                            onChanged: (input) {
-                                              if (input == '') {
-                                                setState(() =>
-                                                minimumRating = null);
-                                              }
-                                              setState(() =>
-                                              minimumRating = num.parse(input));
-                                            },
-                                          ))
-                                    ],
-                                  ),
+                                      )),
                                   SizedBox(
-                                    height: 25,
+                                    width: 25,
                                   ),
-                                  Center(
-                                    child: RaisedButton(
-                                      child: Text('Clear Filters'),
-                                      onPressed: () =>
-                                          setState(() {
-                                            selectedAuthor = null;
-                                            maxPages = null;
-                                            minimumRating = null;
-                                            daysToRead = null;
-                                            avgRatingController.text = '';
-                                            maxPagesController.text = '';
-                                            authorController.text = '';
-                                            daysToReadController.text = '';
-                                          }),
-                                    ),
-                                  )
+                                  Container(
+                                      width: inputSize,
+                                      child: TextField(
+                                        controller: maxPagesController,
+                                        decoration: new InputDecoration(
+                                            labelText: "Max pages"),
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        onChanged: (input) {
+                                          if (input == '') {
+                                            setState(() => maxPages = null);
+                                          }
+                                          setState(() =>
+                                              maxPages = num.parse(input));
+                                        },
+                                      )),
                                 ],
-                              )),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: inputSize,
+                                      child: Provider.of<User>(context)
+                                                  .averageReadingRate !=
+                                              null
+                                          ? TextField(
+                                              controller: daysToReadController,
+                                              decoration: new InputDecoration(
+                                                  labelText: "Days to read"),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly
+                                              ],
+                                              onChanged: (input) {
+                                                if (input == '') {
+                                                  setState(
+                                                      () => daysToRead = null);
+                                                }
+                                                setState(() => daysToRead =
+                                                    num.parse(input));
+                                              },
+                                            )
+                                          : Container()),
+                                  SizedBox(
+                                    width: 25,
+                                  ),
+                                  Container(
+                                      width: inputSize,
+                                      child: TextField(
+                                        controller: avgRatingController,
+                                        decoration: new InputDecoration(
+                                            labelText: "Average rating"),
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        onChanged: (input) {
+                                          if (input == '') {
+                                            setState(
+                                                () => minimumRating = null);
+                                          }
+                                          setState(() =>
+                                              minimumRating = num.parse(input));
+                                        },
+                                      ))
+                                ],
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                              Center(
+                                child: RaisedButton(
+                                  child: Text('Clear Filters'),
+                                  onPressed: () => setState(() {
+                                    selectedAuthor = null;
+                                    maxPages = null;
+                                    minimumRating = null;
+                                    daysToRead = null;
+                                    avgRatingController.text = '';
+                                    maxPagesController.text = '';
+                                    authorController.text = '';
+                                    daysToReadController.text = '';
+                                  }),
+                                ),
+                              )
+                            ],
+                          )),
                     ),
-              ),
-              RaisedButton(
-                child: Text('Sort'),
-                onPressed: () =>
-                    showModalBottomSheet(
+                  ),
+                  RaisedButton(
+                    child: Text('Sort'),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(90))),
+                    onPressed: () => showModalBottomSheet(
                       context: context,
-                      builder: (context) =>
-                          StatefulBuilder(
-                            builder: (context, setModalState) =>
-                                Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 25),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceEvenly,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            'Sort',
-                                            style: TextStyle(fontSize: 20),
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setModalState) => Padding(
+                            padding: EdgeInsets.symmetric(vertical: 25),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Center(
+                                  child: Text(
+                                    'Sort',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                                Wrap(
+                                  children: <Widget>[
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio(
+                                            value: BookListSortType.title,
+                                            groupValue: sortBy,
+                                            onChanged: (value) {
+                                              setState(() => sortBy = value);
+                                              setModalState(
+                                                  () => sortBy = value);
+                                            },
                                           ),
-                                        ),
-                                        Wrap(
-                                          children: <Widget>[
-                                            Row(mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Radio(
-                                                    value: BookListSortType
-                                                        .title,
-                                                    groupValue: sortBy,
-                                                    onChanged: (value) {
-                                                      setState(() =>
-                                                      sortBy = value);
-                                                      setModalState(() =>
-                                                      sortBy = value);
-                                                    },
-                                                  ),
-                                                  Text('Title'),
-                                                ]),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Row(mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Radio(
-                                                    value: BookListSortType
-                                                        .author,
-                                                    groupValue: sortBy,
-                                                    onChanged: (value) {
-                                                      setState(() =>
-                                                      sortBy = value);
-                                                      setModalState(() =>
-                                                      sortBy = value);
-                                                    },
-                                                  ),
-                                                  Text('Author'),
-                                                ]),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Row(mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Radio(
-                                                    value: BookListSortType
-                                                        .numberOfPages,
-                                                    groupValue: sortBy,
-                                                    onChanged: (value) {
-                                                      setState(() =>
-                                                      sortBy = value);
-                                                      setModalState(() =>
-                                                      sortBy = value);
-                                                    },
-                                                  ),
-                                                  Text('No. Pages'),
-                                                ]),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Row(mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Radio(
-                                                    value: BookListSortType
-                                                        .userRating,
-                                                    groupValue: sortBy,
-                                                    onChanged: (value) {
-                                                      setState(() =>
-                                                      sortBy = value);
-                                                      setModalState(() =>
-                                                      sortBy = value);
-                                                    },
-                                                  ),
-                                                  Text('Your Rating'),
-                                                ]),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Row(mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Radio(
-                                                    value: BookListSortType
-                                                        .avgRating,
-                                                    groupValue: sortBy,
-                                                    onChanged: (value) {
-                                                      setState(() =>
-                                                      sortBy = value);
-                                                      setModalState(() =>
-                                                      sortBy = value);
-                                                    },
-                                                  ),
-                                                  Text('Average Rating'),
-                                                ]),
-                                          ],
-                                        ),
-                                        Divider(
-                                          thickness: 1.2,
-                                          indent: 20,
-                                          endIndent: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .center,
-                                          children: [
-                                            Radio(
-                                              value: SortDirection.ascending,
-                                              groupValue: sortDirection,
-                                              onChanged: (value) {
-                                                setState(() =>
-                                                sortDirection = value);
-                                                setModalState(() =>
-                                                sortDirection = value);
-                                              },
-                                            ),
-                                            Text('Ascending'),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Radio(
-                                              value: SortDirection.descending,
-                                              groupValue: sortDirection,
-                                              onChanged: (value) {
-                                                setState(() =>
-                                                sortDirection = value);
-                                                setModalState(() =>
-                                                sortDirection = value);
-                                              },
-                                            ),
-                                            Text('Descending'),
-                                          ],
-                                        ),
-                                      ],
-                                    )),
-                          ),
+                                          Text('Title'),
+                                        ]),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio(
+                                            value: BookListSortType.author,
+                                            groupValue: sortBy,
+                                            onChanged: (value) {
+                                              setState(() => sortBy = value);
+                                              setModalState(
+                                                  () => sortBy = value);
+                                            },
+                                          ),
+                                          Text('Author'),
+                                        ]),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio(
+                                            value:
+                                                BookListSortType.numberOfPages,
+                                            groupValue: sortBy,
+                                            onChanged: (value) {
+                                              setState(() => sortBy = value);
+                                              setModalState(
+                                                  () => sortBy = value);
+                                            },
+                                          ),
+                                          Text('No. Pages'),
+                                        ]),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio(
+                                            value: BookListSortType.userRating,
+                                            groupValue: sortBy,
+                                            onChanged: (value) {
+                                              setState(() => sortBy = value);
+                                              setModalState(
+                                                  () => sortBy = value);
+                                            },
+                                          ),
+                                          Text('Your Rating'),
+                                        ]),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio(
+                                            value: BookListSortType.avgRating,
+                                            groupValue: sortBy,
+                                            onChanged: (value) {
+                                              setState(() => sortBy = value);
+                                              setModalState(
+                                                  () => sortBy = value);
+                                            },
+                                          ),
+                                          Text('Average Rating'),
+                                        ]),
+                                  ],
+                                ),
+                                Divider(
+                                  thickness: 1.2,
+                                  indent: 20,
+                                  endIndent: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Radio(
+                                      value: SortDirection.ascending,
+                                      groupValue: sortDirection,
+                                      onChanged: (value) {
+                                        setState(() => sortDirection = value);
+                                        setModalState(
+                                            () => sortDirection = value);
+                                      },
+                                    ),
+                                    Text('Ascending'),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Radio(
+                                      value: SortDirection.descending,
+                                      groupValue: sortDirection,
+                                      onChanged: (value) {
+                                        setState(() => sortDirection = value);
+                                        setModalState(
+                                            () => sortDirection = value);
+                                      },
+                                    ),
+                                    Text('Descending'),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      ),
                     ),
-              ),
-            ],
-          )),
-      Expanded(
-          child: Container(
-              child: ListView.builder(
-                itemCount: books.length,
-                itemBuilder: (_, index) =>
-                    BookDisplay(
-                      book: books[index],
-                    ),
-              )))
+                  ),
+                ],
+              ))),
     ]);
   }
 
@@ -393,14 +381,14 @@ class _BookListPageState extends State<BookListPage> {
     if (selectedAuthor != null) {
       books = books
           .where((book) =>
-          book.author.toLowerCase().contains(selectedAuthor.toLowerCase()))
+              book.author.toLowerCase().contains(selectedAuthor.toLowerCase()))
           .toList();
     }
 
     if (maxPages != null) {
       books = books
           .where((book) =>
-      book.numberOfPages != null && book.numberOfPages <= maxPages)
+              book.numberOfPages != null && book.numberOfPages <= maxPages)
           .toList();
     }
 
@@ -412,8 +400,8 @@ class _BookListPageState extends State<BookListPage> {
     if (daysToRead != null) {
       books = books
           .where((book) =>
-      book.numberOfPages != null &&
-          (book.numberOfPages / avgReadingRate).ceil() <= daysToRead)
+              book.numberOfPages != null &&
+              (book.numberOfPages / avgReadingRate).ceil() <= daysToRead)
           .toList();
     }
 
