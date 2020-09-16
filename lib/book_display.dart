@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:goodreads_companion/user.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'book.dart';
 import 'settings.dart';
@@ -142,10 +143,10 @@ class BookDisplay extends StatelessWidget {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(90))),
                                     child: Image(
-                                        height: 30,
+                                        height: 20,
                                         image: AssetImage(
-                                            'images/affiliate-logos/amazon.jpg')),
-                                    onPressed: () => null,
+                                            'images/affiliate-logos/amazon.png')),
+                                    onPressed: () => launch('https://www.amazon.co.uk/s?k=${book.title}'),
                                   )
                                 : null,
                             settings.showAudibleLink
@@ -158,7 +159,7 @@ class BookDisplay extends StatelessWidget {
                                         height: 20,
                                         image: AssetImage(
                                             'images/affiliate-logos/audible.png')),
-                                    onPressed: () => null,
+                                    onPressed: () => launch('https://www.audible.co.uk/search?keywords=${book.title}'),
                                   )
                                 : null,
                           ].where((element) => element != null).toList(),
@@ -176,7 +177,7 @@ class BookDisplay extends StatelessWidget {
                                         height: 25,
                                         image: AssetImage(
                                             'images/affiliate-logos/play-books.png')),
-                                    onPressed: () => null,
+                                    onPressed: () => launch('https://play.google.com/store/search?c=books&q=${book.title}'),
                                   )
                                 : null,
                             settings.showBookDepositoryLink
@@ -189,7 +190,7 @@ class BookDisplay extends StatelessWidget {
                                         height: 25,
                                         image: AssetImage(
                                             'images/affiliate-logos/book-depository.png')),
-                                    onPressed: () => null,
+                                    onPressed: () => launch('https://www.bookdepository.com/search?searchTerm=${book.title}'),
                                   )
                                 : null,
                           ].where((element) => element != null).toList(),
