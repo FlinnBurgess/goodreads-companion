@@ -28,6 +28,17 @@ class BookDisplay extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Text(
+                          book.title,
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          book.author,
+                          style: TextStyle(
+                              fontSize: 13, color: Colors.grey[600]),
+                        ),
+                        SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -39,18 +50,6 @@ class BookDisplay extends StatelessWidget {
                                 child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  book.title,
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                Text(
-                                  book.author,
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey[600]),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
                                 Padding(
                                     padding: EdgeInsets.only(left: 3),
                                     child: Text(

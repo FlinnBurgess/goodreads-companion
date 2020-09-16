@@ -170,7 +170,7 @@ class _RandomBookPageState extends State<RandomBookPage> {
                                       (text == '' ? null : text),
                                   controller: textEditingController,
                                   decoration:
-                                      InputDecoration(labelText: 'Author')),
+                                      InputDecoration(labelText: 'Author', border: OutlineInputBorder(), filled: true, fillColor: Colors.white)),
                             )),
                         SizedBox(
                           width: 25,
@@ -178,8 +178,9 @@ class _RandomBookPageState extends State<RandomBookPage> {
                         Container(
                             width: inputSize,
                             child: TextField(
-                              decoration:
-                                  new InputDecoration(labelText: "Max pages"),
+                              decoration: new InputDecoration(
+                                  labelText: "Max pages",
+                                  border: OutlineInputBorder(), filled: true, fillColor: Colors.white),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly
@@ -193,6 +194,7 @@ class _RandomBookPageState extends State<RandomBookPage> {
                             ))
                       ],
                     ),
+                    SizedBox(height: 15,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -201,7 +203,7 @@ class _RandomBookPageState extends State<RandomBookPage> {
                             child: averageReadingRate != null
                                 ? TextField(
                                     decoration: new InputDecoration(
-                                        labelText: "Days to read"),
+                                        labelText: "Days to read", border: OutlineInputBorder(), filled: true, fillColor: Colors.white),
                                     keyboardType: TextInputType.number,
                                     inputFormatters: <TextInputFormatter>[
                                       FilteringTextInputFormatter.digitsOnly
@@ -222,7 +224,7 @@ class _RandomBookPageState extends State<RandomBookPage> {
                             width: inputSize,
                             child: TextField(
                               decoration: new InputDecoration(
-                                  labelText: "Minimum avg rating"),
+                                  labelText: "Average rating", border: OutlineInputBorder(), filled: true, fillColor: Colors.white),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly
