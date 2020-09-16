@@ -106,6 +106,9 @@ class _BookListPageState extends State<BookListPage> {
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -117,10 +120,16 @@ class _BookListPageState extends State<BookListPage> {
                                                 .toLowerCase()
                                                 .contains(text.toLowerCase()))
                                             .toList(),
-                                        itemBuilder: (_, match) => Container(
-                                            padding: EdgeInsets.only(
-                                                top: 5, bottom: 5),
-                                            child: Text(match)),
+                                        itemBuilder: (_, match) => Center(
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                              Container(
+                                                  padding: EdgeInsets.only(
+                                                      top: 5, bottom: 5),
+                                                  child: Text(match, textAlign: TextAlign.center,)),
+                                                  Divider(),
+                                            ])),
                                         onSuggestionSelected: (selected) {
                                           authorController.text = selected;
                                           setState(() {
@@ -136,7 +145,11 @@ class _BookListPageState extends State<BookListPage> {
                                                             : text)),
                                                 controller: authorController,
                                                 decoration: InputDecoration(
-                                                    labelText: 'Author')),
+                                                    labelText: 'Author',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    filled: true,
+                                                    fillColor: Colors.white)),
                                       )),
                                   SizedBox(
                                     width: 25,
@@ -146,7 +159,10 @@ class _BookListPageState extends State<BookListPage> {
                                       child: TextField(
                                         controller: titleController,
                                         decoration: new InputDecoration(
-                                            labelText: "Title"),
+                                            labelText: "Title",
+                                            border: OutlineInputBorder(),
+                                            filled: true,
+                                            fillColor: Colors.white),
                                         onChanged: (input) {
                                           if (input == '') {
                                             setState(() => titleFilter = null);
@@ -155,6 +171,9 @@ class _BookListPageState extends State<BookListPage> {
                                         },
                                       )),
                                 ],
+                              ),
+                              SizedBox(
+                                height: 10,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -167,7 +186,10 @@ class _BookListPageState extends State<BookListPage> {
                                           ? TextField(
                                               controller: daysToReadController,
                                               decoration: new InputDecoration(
-                                                  labelText: "Days to read"),
+                                                  labelText: "Days to read",
+                                                  border: OutlineInputBorder(),
+                                                  filled: true,
+                                                  fillColor: Colors.white),
                                               keyboardType:
                                                   TextInputType.number,
                                               inputFormatters: <
@@ -193,7 +215,10 @@ class _BookListPageState extends State<BookListPage> {
                                       child: TextField(
                                         controller: avgRatingController,
                                         decoration: new InputDecoration(
-                                            labelText: "Average rating"),
+                                            labelText: "Average rating",
+                                            border: OutlineInputBorder(),
+                                            filled: true,
+                                            fillColor: Colors.white),
                                         keyboardType: TextInputType.number,
                                         inputFormatters: <TextInputFormatter>[
                                           FilteringTextInputFormatter.digitsOnly
@@ -209,6 +234,9 @@ class _BookListPageState extends State<BookListPage> {
                                       ))
                                 ],
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -217,7 +245,10 @@ class _BookListPageState extends State<BookListPage> {
                                       child: TextField(
                                         controller: maxPagesController,
                                         decoration: new InputDecoration(
-                                            labelText: "Max Pages"),
+                                            labelText: "Max Pages",
+                                            border: OutlineInputBorder(),
+                                            filled: true,
+                                            fillColor: Colors.white),
                                         keyboardType: TextInputType.number,
                                         inputFormatters: <TextInputFormatter>[
                                           FilteringTextInputFormatter.digitsOnly
@@ -233,7 +264,7 @@ class _BookListPageState extends State<BookListPage> {
                                 ],
                               ),
                               SizedBox(
-                                height: 25,
+                                height: 15,
                               ),
                               Padding(
                                   padding: EdgeInsets.only(

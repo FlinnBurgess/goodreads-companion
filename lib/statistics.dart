@@ -158,6 +158,9 @@ class TotalPagesReadStatistic extends StatelessWidget {
                 'Total pages read',
                 style: TextStyle(fontSize: 15),
               ),
+              SizedBox(
+                height: 10,
+              ),
               Text(
                 'No data available',
                 style: TextStyle(fontSize: 25),

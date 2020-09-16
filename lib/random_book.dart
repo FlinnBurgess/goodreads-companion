@@ -158,9 +158,16 @@ class _RandomBookPageState extends State<RandomBookPage> {
                                       .toLowerCase()
                                       .contains(text.toLowerCase()))
                                   .toList(),
-                              itemBuilder: (_, match) => Container(
-                                  padding: EdgeInsets.only(top: 5, bottom: 5),
-                                  child: Text(match)),
+                              itemBuilder: (_, match) => Center(
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                            padding: EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            child: Text(match, textAlign: TextAlign.center,)),
+                                        Divider(),
+                                      ])),
                               onSuggestionSelected: (selected) {
                                 textEditingController.text = selected;
                                 selectedAuthor = selected;
