@@ -87,7 +87,7 @@ class _BookListPageState extends State<BookListPage> {
                     shape: RoundedRectangleBorder(
                         side: BorderSide(
                             color: _isFiltered()
-                                ? Colors.amber
+                                ? Colors.amber[800]
                                 : Colors.transparent,
                             width: 1.5),
                         borderRadius: BorderRadius.all(Radius.circular(90))),

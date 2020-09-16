@@ -31,7 +31,7 @@ class _MainUIState extends State<MainUI> {
     var bottomNavBar = BottomNavigationBar(
       backgroundColor: Colors.black,
       selectedItemColor: Colors.amber[800],
-      unselectedItemColor: Colors.grey[800],
+      unselectedItemColor: Colors.grey[700],
       showUnselectedLabels: true,
       items: [
         BottomNavigationBarItem(

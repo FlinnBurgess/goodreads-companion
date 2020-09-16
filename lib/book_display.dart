@@ -21,7 +21,7 @@ class BookDisplay extends StatelessWidget {
             : (book.numberOfPages / avgReadingRate).ceil();
 
         return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 5),
             child: Card(
               child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -51,6 +51,14 @@ class BookDisplay extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
+                                Padding(
+                                    padding: EdgeInsets.only(left: 3),
+                                    child: Text(
+                                      'Avg Rating',
+                                      style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 12),
+                                    )),
                                 Row(mainAxisSize: MainAxisSize.min, children: [
                                   RatingBarIndicator(
                                     rating: book.averageRating,
@@ -61,18 +69,32 @@ class BookDisplay extends StatelessWidget {
                                     itemCount: 5,
                                     itemSize: 20,
                                   ),
-                                  Text('(${book.numberOfRatings})', style: TextStyle(color: Colors.grey),)
+                                  Text(
+                                    '(${book.numberOfRatings})',
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 12),
+                                  )
                                 ]),
                                 SizedBox(
                                   height: 10,
                                 ),
                                 book.userRating == null
                                     ? null
+                                    : Padding(
+                                        padding: EdgeInsets.only(left: 3),
+                                        child: Text(
+                                          'Your Rating',
+                                          style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 12),
+                                        )),
+                                book.userRating == null
+                                    ? null
                                     : RatingBarIndicator(
                                         rating: book.userRating.toDouble(),
                                         itemBuilder: (_, __) => Icon(
                                           Icons.star,
-                                          color: Colors.purple,
+                                          color: Colors.teal,
                                         ),
                                         itemCount: 5,
                                         itemSize: 20,

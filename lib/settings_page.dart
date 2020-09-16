@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       Flexible(
                           child: Text(
-                        'Exclude books read in a single day from your statistics?\n(Misentered dates may make your calculated reading rate less accurate.)',
+                        'Exclude books read in a single day from your statistics? (Misentered dates may make your calculated reading rate less accurate)',
                       )),
                     ],
                   ),
