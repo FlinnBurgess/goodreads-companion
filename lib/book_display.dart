@@ -35,10 +35,12 @@ class BookDisplay extends StatelessWidget {
                         ),
                         Text(
                           book.author,
-                          style: TextStyle(
-                              fontSize: 13, color: Colors.grey[600]),
+                          style:
+                              TextStyle(fontSize: 13, color: Colors.grey[600]),
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -135,13 +137,27 @@ class BookDisplay extends StatelessWidget {
                           children: [
                             settings.showAmazonLink
                                 ? RaisedButton(
-                                    child: Text('Amazon'),
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(90))),
+                                    child: Image(
+                                        height: 30,
+                                        image: AssetImage(
+                                            'images/affiliate-logos/amazon.jpg')),
                                     onPressed: () => null,
                                   )
                                 : null,
                             settings.showAudibleLink
                                 ? RaisedButton(
-                                    child: Text('Audible'),
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(90))),
+                                    child: Image(
+                                        height: 20,
+                                        image: AssetImage(
+                                            'images/affiliate-logos/audible.png')),
                                     onPressed: () => null,
                                   )
                                 : null,
@@ -152,13 +168,27 @@ class BookDisplay extends StatelessWidget {
                           children: [
                             settings.showGoogleBooksLink
                                 ? RaisedButton(
-                                    child: Text('Google Books'),
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(90))),
+                                    child: Image(
+                                        height: 25,
+                                        image: AssetImage(
+                                            'images/affiliate-logos/play-books.png')),
                                     onPressed: () => null,
                                   )
                                 : null,
                             settings.showBookDepositoryLink
                                 ? RaisedButton(
-                                    child: Text('Book Depository'),
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(90))),
+                                    child: Image(
+                                        height: 25,
+                                        image: AssetImage(
+                                            'images/affiliate-logos/book-depository.png')),
                                     onPressed: () => null,
                                   )
                                 : null,
