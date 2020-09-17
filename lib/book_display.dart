@@ -146,7 +146,8 @@ class BookDisplay extends StatelessWidget {
                                         height: 20,
                                         image: AssetImage(
                                             'images/affiliate-logos/amazon.png')),
-                                    onPressed: () => launch('https://www.amazon.co.uk/s?k=${book.title}'),
+                                    onPressed: () => launch(_getAmazonUrl(
+                                        book.title, settings.selectedCountry)),
                                   )
                                 : null,
                             settings.showAudibleLink
@@ -159,7 +160,8 @@ class BookDisplay extends StatelessWidget {
                                         height: 20,
                                         image: AssetImage(
                                             'images/affiliate-logos/audible.png')),
-                                    onPressed: () => launch('https://www.audible.co.uk/search?keywords=${book.title}'),
+                                    onPressed: () => launch(_getAudibleUrl(
+                                        book.title, settings.selectedCountry)),
                                   )
                                 : null,
                           ].where((element) => element != null).toList(),
@@ -177,7 +179,8 @@ class BookDisplay extends StatelessWidget {
                                         height: 25,
                                         image: AssetImage(
                                             'images/affiliate-logos/play-books.png')),
-                                    onPressed: () => launch('https://play.google.com/store/search?c=books&q=${book.title}'),
+                                    onPressed: () => launch(
+                                        'https://play.google.com/store/search?c=books&q=${book.title}'),
                                   )
                                 : null,
                             settings.showBookDepositoryLink
@@ -190,7 +193,8 @@ class BookDisplay extends StatelessWidget {
                                         height: 25,
                                         image: AssetImage(
                                             'images/affiliate-logos/book-depository.png')),
-                                    onPressed: () => launch('https://www.bookdepository.com/search?searchTerm=${book.title}'),
+                                    onPressed: () => launch(
+                                        'https://www.bookdepository.com/search?searchTerm=${book.title}'),
                                   )
                                 : null,
                           ].where((element) => element != null).toList(),
@@ -199,5 +203,113 @@ class BookDisplay extends StatelessWidget {
             ));
       },
     );
+  }
+
+  String _getAmazonUrl(String bookTitle, String countryCode) {
+    String url;
+
+    switch (countryCode) {
+      case 'AU':
+        url = 'https://www.amazon.com.au/s?k=';
+        break;
+      case 'BR':
+        url = 'https://www.amazon.com.br/s?k=';
+        break;
+      case 'CA':
+        url = 'https://www.amazon.ca/s?k=';
+        break;
+      case 'CN':
+        url = 'https://www.amazon.cn/s?k=';
+        break;
+      case 'FR':
+        url = 'https://www.amazon.fr/s?k=';
+        break;
+      case 'DE':
+        url = 'https://www.amazon.de/s?k=';
+        break;
+      case 'IN':
+        url = 'https://www.amazon.in/s?k=';
+        break;
+      case 'IT':
+        url = 'https://www.amazon.it/s?k=';
+        break;
+      case 'JP':
+        url = 'https://www.amazon.co.jp/s?k=';
+        break;
+      case 'MX':
+        url = 'https://www.amazon.com.mx/s?k=';
+        break;
+      case 'NL':
+        url = 'https://www.amazon.nl/s?k=';
+        break;
+      case 'ES':
+        url = 'https://www.amazon.es/s?k=';
+        break;
+      case 'GB':
+        url = 'https://www.amazon.co.uk/s?k=';
+        break;
+      case 'US':
+        url = 'https://www.amazon.com/s?k=';
+        break;
+      default:
+        url = 'https://www.amazon.com/s?k=';
+        break;
+    }
+
+    return url += bookTitle;
+  }
+
+  String _getAudibleUrl(String bookTitle, String countryCode) {
+    String url;
+
+    switch (countryCode) {
+      case 'AU':
+        url = 'https://www.audible.com.au/search?keywords=';
+        break;
+      case 'NZ':
+        url = 'https://www.audible.com.au/search?keywords=';
+        break;
+      case 'CA':
+        url = 'https://www.audible.ca/search?keywords=';
+        break;
+      case 'FR':
+        url = 'https://www.audible.fr/search?keywords=';
+        break;
+      case 'BE':
+        url = 'https://www.audible.fr/search?keywords=';
+        break;
+      case 'CH':
+        url = 'https://www.audible.fr/search?keywords=';
+        break;
+      case 'DE':
+        url = 'https://www.audible.de/search?keywords=';
+        break;
+      case 'AT':
+        url = 'https://www.audible.de/search?keywords=';
+        break;
+      case 'IN':
+        url = 'https://www.audible.in/search?keywords=';
+        break;
+      case 'IT':
+        url = 'https://www.audible.it/search?keywords=';
+        break;
+      case 'JP':
+        url = 'https://www.audible.co.jp/search?keywords=';
+        break;
+      case 'GB':
+        url = 'https://www.audible.co.uk/search?keywords=';
+        break;
+      case 'IE':
+        url = 'https://www.audible.co.uk/search?keywords=';
+        break;
+      case 'US':
+        url = 'https://www.audible.com/search?keywords=';
+        break;
+      default:
+        url = 'https://www.audible.com/search?keywords=';
+        break;
+    }
+
+    return url += bookTitle;
   }
 }
