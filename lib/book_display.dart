@@ -21,6 +21,21 @@ class BookDisplay extends StatelessWidget {
             ? null
             : (book.numberOfPages / avgReadingRate).ceil();
 
+        var amazonLogo = Image(
+            height: 20, image: AssetImage('images/affiliate-logos/amazon.png'));
+
+        var audibleLogo = Image(
+            height: 20,
+            image: AssetImage('images/affiliate-logos/audible.png'));
+
+        var googlePlayBooksLogo = Image(
+            height: 25,
+            image: AssetImage('images/affiliate-logos/play-books.png'));
+
+        var bookDepositoryLogo = Image(
+            height: 25,
+            image: AssetImage('images/affiliate-logos/book-depository.png'));
+
         return Padding(
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: Card(
@@ -142,10 +157,7 @@ class BookDisplay extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(90))),
-                                    child: Image(
-                                        height: 20,
-                                        image: AssetImage(
-                                            'images/affiliate-logos/amazon.png')),
+                                    child: amazonLogo,
                                     onPressed: () => launch(_getAmazonUrl(
                                         book.title, settings.selectedCountry)),
                                   )
@@ -156,10 +168,7 @@ class BookDisplay extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(90))),
-                                    child: Image(
-                                        height: 20,
-                                        image: AssetImage(
-                                            'images/affiliate-logos/audible.png')),
+                                    child: audibleLogo,
                                     onPressed: () => launch(_getAudibleUrl(
                                         book.title, settings.selectedCountry)),
                                   )
@@ -175,12 +184,9 @@ class BookDisplay extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(90))),
-                                    child: Image(
-                                        height: 25,
-                                        image: AssetImage(
-                                            'images/affiliate-logos/play-books.png')),
+                                    child: googlePlayBooksLogo,
                                     onPressed: () => launch(
-                                        'https://play.google.com/store/search?c=books&q=${book.title}'),
+                                        'https://play.google.com/store/search?gl=${settings.selectedCountry}&c=books&q=${book.title}'),
                                   )
                                 : null,
                             settings.showBookDepositoryLink
@@ -189,10 +195,7 @@ class BookDisplay extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(90))),
-                                    child: Image(
-                                        height: 25,
-                                        image: AssetImage(
-                                            'images/affiliate-logos/book-depository.png')),
+                                    child: bookDepositoryLogo,
                                     onPressed: () => launch(
                                         'https://www.bookdepository.com/search?searchTerm=${book.title}'),
                                   )
