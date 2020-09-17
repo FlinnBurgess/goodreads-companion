@@ -90,7 +90,7 @@ class _BookListPageState extends State<BookListPage> {
                                 ? Colors.amber[800]
                                 : Colors.transparent,
                             width: 1.5),
-                        borderRadius: BorderRadius.all(Radius.circular(90))),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     onPressed: () => showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
@@ -277,7 +277,7 @@ class _BookListPageState extends State<BookListPage> {
                                       color: Colors.white,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(90))),
+                                              Radius.circular(10))),
                                       onPressed: () => setState(() {
                                         selectedAuthor = null;
                                         maxPages = null;
@@ -300,7 +300,7 @@ class _BookListPageState extends State<BookListPage> {
                     child: Text('Sort'),
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(90))),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     onPressed: () => showModalBottomSheet(
                       context: context,
                       builder: (context) => StatefulBuilder(

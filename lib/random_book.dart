@@ -103,7 +103,7 @@ class _RandomBookPageState extends State<RandomBookPage> {
                       child: Text('Random book'),
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50))),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       onPressed: () {
                         List<Book> booksToSearch = List.from(widget.books);
                         if (maxPages != null) {

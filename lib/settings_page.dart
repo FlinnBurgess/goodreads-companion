@@ -39,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius:
-                                BorderRadius.all(Radius.circular(50))),
+                                BorderRadius.all(Radius.circular(10))),
                       )
                     ],
                   ),

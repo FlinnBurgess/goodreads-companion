@@ -156,7 +156,7 @@ class BookDisplay extends StatelessWidget {
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(90))),
+                                            Radius.circular(10))),
                                     child: amazonLogo,
                                     onPressed: () => launch(_getAmazonUrl(
                                         book.title, settings.selectedCountry)),
@@ -167,7 +167,7 @@ class BookDisplay extends StatelessWidget {
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(90))),
+                                            Radius.circular(10))),
                                     child: audibleLogo,
                                     onPressed: () => launch(_getAudibleUrl(
                                         book.title, settings.selectedCountry)),
@@ -183,7 +183,7 @@ class BookDisplay extends StatelessWidget {
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(90))),
+                                            Radius.circular(10))),
                                     child: googlePlayBooksLogo,
                                     onPressed: () => launch(
                                         'https://play.google.com/store/search?gl=${settings.selectedCountry}&c=books&q=${book.title}'),
@@ -194,7 +194,7 @@ class BookDisplay extends StatelessWidget {
                                     color: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(90))),
+                                            Radius.circular(10))),
                                     child: bookDepositoryLogo,
                                     onPressed: () => launch(
                                         'https://www.bookdepository.com/search?searchTerm=${book.title}'),
