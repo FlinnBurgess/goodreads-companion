@@ -274,6 +274,10 @@ class _BookListPageState extends State<BookListPage> {
                                   child: Center(
                                     child: RaisedButton(
                                       child: Text('Clear Filters'),
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(90))),
                                       onPressed: () => setState(() {
                                         selectedAuthor = null;
                                         maxPages = null;
