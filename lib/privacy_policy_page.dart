@@ -24,7 +24,16 @@ class PrivacyPolicyPage extends StatelessWidget {
                     height: 5,
                   ),
                   Text(
-                      'This app does not collect any personal information about you or your usage.'),
+                      'In downloading data about your Goodreads books and shelves, this app will store some personal information such as your book ratings and user ID.'),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                      'If this data is not publicly available then the app will only be able to access and store the information with your express consent.'),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text('This information is not shared or used anywhere outside of this app.'),
                   SizedBox(
                     height: 20,
                   ),

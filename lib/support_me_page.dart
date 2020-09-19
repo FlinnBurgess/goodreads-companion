@@ -9,7 +9,8 @@ class SupportMePage extends StatelessWidget {
           title: Text('Support Me'),
         ),
         body: Center(
-            child: Column(
+            child: SingleChildScrollView(
+                child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
@@ -43,9 +44,16 @@ class SupportMePage extends StatelessWidget {
             Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
+                    'You can also support me by buying books from your shelves using the store buttons listed. Any purchases made using these links will result in a small amount of commission for me.',
+                    textAlign: TextAlign.center)),
+            SizedBox(
+              height: 15,
+            ),Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text(
                     'If you spot any bugs or have suggestions for how I can improve the app, feel free to contact me at flinn@thetimelydeveloper.com',
                     textAlign: TextAlign.center)),
           ],
-        )));
+        ))));
   }
 }
