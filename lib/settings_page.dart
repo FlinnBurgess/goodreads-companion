@@ -1,9 +1,12 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:goodreads_companion/library.dart';
+import 'package:goodreads_companion/privacy_policy_page.dart';
 import 'package:goodreads_companion/settings.dart';
+import 'package:goodreads_companion/support_me_page.dart';
 import 'package:provider/provider.dart';
 
+import 'data_policy_page.dart';
 import 'user.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -24,8 +27,13 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Current User', style: TextStyle(fontSize: 20),),
-                  SizedBox(height: 10,),
+                  Text(
+                    'Current User',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     children: [
                       Text('${user.userId}'),
@@ -46,8 +54,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Divider()),
-                  Text('Country', style: TextStyle(fontSize: 20),),
-                  SizedBox(height: 10,),
+                  Text(
+                    'Country',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   CountryCodePicker(
                     onChanged: (selected) =>
                         settings.selectedCountry = selected.code,
@@ -59,8 +72,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Divider()),
-                  Text('Store buttons to show', style: TextStyle(fontSize: 20),),
-                  SizedBox(height: 10,),
+                  Text(
+                    'Store buttons to show',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
@@ -126,8 +144,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Divider()),
-                  Text('Other Settings', style: TextStyle(fontSize: 20),),
-                  SizedBox(height: 20,),
+                  Text(
+                    'Other Settings',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       Checkbox(
@@ -141,6 +164,54 @@ class _SettingsPageState extends State<SettingsPage> {
                       )),
                     ],
                   ),
+                  Padding(padding: EdgeInsets.only(top: 12), child: Divider()),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PrivacyPolicyPage())),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Privacy Policy',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Icon(Icons.chevron_right)
+                              ]))),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DataPolicyPage())),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Data Policy',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Icon(Icons.chevron_right)
+                              ]))),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SupportMePage())),
+                      child: Padding(
+                          padding: EdgeInsets.only(top: 12),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Support Me',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Icon(Icons.chevron_right)
+                              ]))),
                 ],
               )),
         );
