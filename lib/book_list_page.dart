@@ -52,9 +52,6 @@ class _BookListPageState extends State<BookListPage> {
 
     books = books.toSet().toList();
 
-    print('untouched books length: ${widget.books.length}');
-    print('de-duplicated books length: ${books.length}');
-
     return Stack(children: [
       Padding(
           padding: EdgeInsets.only(top: 60),
