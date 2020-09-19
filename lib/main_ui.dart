@@ -35,7 +35,7 @@ class _MainUIState extends State<MainUI> {
       showUnselectedLabels: true,
       items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.library_books), title: Text('Book lists')),
+            icon: Icon(Icons.library_books), title: Text('All Books')),
         BottomNavigationBarItem(
             icon: Icon(Icons.insert_chart), title: Text('Statistics')),
         BottomNavigationBarItem(

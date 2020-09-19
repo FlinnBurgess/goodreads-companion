@@ -14,6 +14,7 @@ import 'package:oauth1/oauth1.dart' as oauth1;
 
 import 'book.dart';
 import 'library.dart';
+import 'policy_agreement_page.dart';
 import 'user.dart';
 
 Future<void> main() async {
@@ -72,6 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Consumer4<Library, User, Authentication, Settings>(
         builder: (context, library, user, authentication, settings, _) {
+      if (!settings.userHasAcceptedPolicies) {
+        return PolicyAgreementPage();
+      }
+
       if (DateTime.now().difference(settings.lastDownloaded).inDays >= 1) {
         return DataRefreshPrompt();
       }

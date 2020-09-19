@@ -15,6 +15,7 @@ class Settings extends ChangeNotifier {
   bool _showAudibleLink = true;
   bool _showGoogleBooksLink = true;
   bool _showBookDepositoryLink = true;
+  bool _userHasAcceptedPolicies = false;
 
   Settings() {
     _lastDownloaded = DateTime.now();
@@ -39,7 +40,8 @@ class Settings extends ChangeNotifier {
       'showAmazonLink': _showAmazonLink,
       'showAudibleLink': _showAudibleLink,
       'showGoogleBooksLink': _showGoogleBooksLink,
-      'showBookDepositoryLink': _showBookDepositoryLink
+      'showBookDepositoryLink': _showBookDepositoryLink,
+      'userHasAcceptedPolicies': _userHasAcceptedPolicies
     };
   }
 
@@ -66,6 +68,7 @@ class Settings extends ChangeNotifier {
     _showAudibleLink = decoded['showAudibleLink'];
     _showGoogleBooksLink = decoded['showGoogleBooksLink'];
     _showBookDepositoryLink = decoded['showBookDepositoryLink'];
+    _userHasAcceptedPolicies = decoded['userHasAcceptedPolicies'];
   }
 
   static Future<File> get _localFile async {
@@ -135,5 +138,13 @@ class Settings extends ChangeNotifier {
     _showAmazonLink = value;
     notifyListeners();
     save();
+  }
+
+  bool get userHasAcceptedPolicies => _userHasAcceptedPolicies;
+
+  set userHasAcceptedPolicies(bool value) {
+    _userHasAcceptedPolicies = value;
+    save();
+    notifyListeners();
   }
 }
