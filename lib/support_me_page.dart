@@ -22,16 +22,6 @@ class SupportMePage extends StatelessWidget {
               height: 15,
             ),
             RaisedButton(
-                child: Text('Buy me a coffee'),
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onPressed: () =>
-                    launch('https://www.buymeacoffee.com/flinnburgess')),
-            SizedBox(
-              height: 15,
-            ),
-            RaisedButton(
                 child: Text('Rate the app'),
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
