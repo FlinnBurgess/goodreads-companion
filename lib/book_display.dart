@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:goodreads_companion/user.dart';
@@ -10,7 +11,20 @@ import 'settings.dart';
 class BookDisplay extends StatelessWidget {
   final Book book;
 
-  const BookDisplay(this.book, {Key key}) : super(key: key);
+  final amazonLogo =
+      Image(height: 20, image: AssetImage('images/affiliate-logos/amazon.png'));
+
+  final audibleLogo = Image(
+      height: 20, image: AssetImage('images/affiliate-logos/audible.png'));
+
+  final googlePlayBooksLogo = Image(
+      height: 25, image: AssetImage('images/affiliate-logos/play-books.png'));
+
+  final bookDepositoryLogo = Image(
+      height: 25,
+      image: AssetImage('images/affiliate-logos/book-depository.png'));
+
+  BookDisplay(this.book, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +34,6 @@ class BookDisplay extends StatelessWidget {
         int daysToRead = avgReadingRate == null || book.numberOfPages == null
             ? null
             : (book.numberOfPages / avgReadingRate).ceil();
-
-        var amazonLogo = Image(
-            height: 20, image: AssetImage('images/affiliate-logos/amazon.png'));
-
-        var audibleLogo = Image(
-            height: 20,
-            image: AssetImage('images/affiliate-logos/audible.png'));
-
-        var googlePlayBooksLogo = Image(
-            height: 25,
-            image: AssetImage('images/affiliate-logos/play-books.png'));
-
-        var bookDepositoryLogo = Image(
-            height: 25,
-            image: AssetImage('images/affiliate-logos/book-depository.png'));
 
         return Padding(
             padding: EdgeInsets.symmetric(horizontal: 5),
@@ -141,71 +140,117 @@ class BookDisplay extends StatelessWidget {
                                 settings.showAmazonLink
                             ? Padding(
                                 padding: EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  'Buy this book:',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ))
+                                child: RaisedButton(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Text('Buy this book'),
+                                    onPressed: () => _showBuyModal(context,
+                                        '${book.title} ${book.author}')))
                             : null,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            settings.showAmazonLink
-                                ? RaisedButton(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: amazonLogo,
-                                    onPressed: () => launch(_getAmazonUrl(
-                                        book.title, settings.selectedCountry)),
-                                  )
-                                : null,
-                            settings.showAudibleLink
-                                ? RaisedButton(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: audibleLogo,
-                                    onPressed: () => launch(_getAudibleUrl(
-                                        book.title, settings.selectedCountry)),
-                                  )
-                                : null,
-                          ].where((element) => element != null).toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            settings.showGoogleBooksLink
-                                ? RaisedButton(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: googlePlayBooksLogo,
-                                    onPressed: () => launch(
-                                        'https://play.google.com/store/search?gl=${settings.selectedCountry}&c=books&q=${book.title}'),
-                                  )
-                                : null,
-                            settings.showBookDepositoryLink
-                                ? RaisedButton(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: bookDepositoryLogo,
-                                    onPressed: () => launch(
-                                        'https://www.bookdepository.com/search?searchTerm=${book.title}'),
-                                  )
-                                : null,
-                          ].where((element) => element != null).toList(),
-                        )
                       ].where((element) => element != null).toList())),
             ));
       },
     );
+  }
+
+  _showBuyModal(context, searchString) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Consumer<Settings>(
+            builder: (context, settings, _) {
+              return SimpleDialog(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Select a Store',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          settings.showAmazonLink
+                              ? RaisedButton(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: amazonLogo,
+                                  onPressed: () => launch(_getAmazonUrl(
+                                      searchString, settings.selectedCountry)),
+                                )
+                              : null,
+                          settings.showAudibleLink
+                              ? RaisedButton(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: audibleLogo,
+                                  onPressed: () => launch(_getAudibleUrl(
+                                      searchString, settings.selectedCountry)),
+                                )
+                              : null,
+                        ].where((element) => element != null).toList(),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          settings.showGoogleBooksLink
+                              ? RaisedButton(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: googlePlayBooksLogo,
+                                  onPressed: () => launch(
+                                      'https://play.google.com/store/search?gl=${settings.selectedCountry}&c=books&q=$searchString'),
+                                )
+                              : null,
+                          settings.showBookDepositoryLink
+                              ? RaisedButton(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: bookDepositoryLogo,
+                                  onPressed: () => launch(
+                                      'https://www.bookdepository.com/search?searchTerm=$searchString'),
+                                )
+                              : null,
+                        ].where((element) => element != null).toList(),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CountryCodePicker(
+                        onChanged: (selected) =>
+                            settings.selectedCountry = selected.code,
+                        initialSelection: settings.selectedCountry,
+                        favorite: ['GB', 'US'],
+                        showCountryOnly: true,
+                        showOnlyCountryWhenClosed: true,
+                      )
+                    ],
+                  )
+                ],
+              );
+            },
+          );
+        });
   }
 
   String _getAmazonUrl(String bookTitle, String countryCode) {
@@ -225,16 +270,16 @@ class BookDisplay extends StatelessWidget {
         url = 'https://www.amazon.cn/s?k=';
         break;
       case 'FR':
-        url = 'https://www.amazon.fr/s?k=';
+        url = 'https://www.amazon.fr/s?tag=fbjulez0e-21&k=';
         break;
       case 'DE':
-        url = 'https://www.amazon.de/s?k=';
+        url = 'https://www.amazon.de/s?tag=fbjulez0a-21&k=';
         break;
       case 'IN':
         url = 'https://www.amazon.in/s?k=';
         break;
       case 'IT':
-        url = 'https://www.amazon.it/s?k=';
+        url = 'https://www.amazon.it/s?tag=fbjulez0b-21&k=';
         break;
       case 'JP':
         url = 'https://www.amazon.co.jp/s?k=';
@@ -246,13 +291,13 @@ class BookDisplay extends StatelessWidget {
         url = 'https://www.amazon.nl/s?k=';
         break;
       case 'ES':
-        url = 'https://www.amazon.es/s?k=';
+        url = 'https://www.amazon.es/s?tag=fbjulez01-21&k=';
         break;
       case 'GB':
-        url = 'https://www.amazon.co.uk/s?k=';
+        url = 'https://www.amazon.co.uk/s?tag=fbjulez-21&k=';
         break;
       case 'US':
-        url = 'https://www.amazon.com/s?k=';
+        url = 'https://www.amazon.com/s?tag=fbjulez-20&k=';
         break;
       default:
         url = 'https://www.amazon.com/s?k=';

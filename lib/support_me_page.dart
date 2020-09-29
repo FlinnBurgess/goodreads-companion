@@ -34,7 +34,7 @@ class SupportMePage extends StatelessWidget {
             Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
-                    'You can also support me by buying books from your shelves using the store buttons listed. Any purchases made using these links will result in a small amount of commission for me.',
+                    'You can also support me by buying books from your shelves using the Amazon button listed. Any purchases made using this link will result in a small amount of commission for me.',
                     textAlign: TextAlign.center)),
             SizedBox(
               height: 15,
